@@ -226,3 +226,4 @@ Este projeto foi desenvolvido por **Julia Mello Lopes Gonçalves**, estudante de
 ### Contato
 
 - **E-mail**: juliamellolopesgoncalves@gmail.com
+- **GitHub**: [github.com/juliamellolopes](https://github.com/juliamellolopes)
