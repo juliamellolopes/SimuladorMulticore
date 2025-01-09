@@ -11,7 +11,7 @@ CPU::CPU(MemoryRAM &memory) {
     _PC = 0;
     _coreAtivo = 0;
     _cores = vector<CORE>(TAM_C);
-    cout << "--- Iniciando Simulacao com " << TAM_C << " Cores e " << TAM_R << " Registradores cada ---" << endl;
+    cout << "Iniciando Simulacao com " << TAM_C << " Cores e " << TAM_R << " Registradores cada" << endl << endl;
 }
 
 /**
@@ -58,7 +58,7 @@ void CPU::escreverRegistrador(int reg, int valor) {
     if (reg > 0 && reg <= TAM_R) {
 
         _cores[_coreAtivo]._registradores[reg - 1] = valor;
-        cout << "Valor " << valor << " foi escrito no Registrador R" << reg << " no Core " << _coreAtivo << endl;
+        cout << "      -> Valor " << valor << " foi escrito no Registrador R" << reg << " no Core " << _coreAtivo << endl << endl;
 
     } else {
         cerr << "Erro: Registrador invalido!" << endl;

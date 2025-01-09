@@ -4,8 +4,8 @@
  * @brief Inicializa a Unidade de Controle com memória principal e CPU.
  */
 UC::UC() {
-    
-    MemoryRAM memory("instructions.txt");                 // Instancia MemoryRAM com o arquivo "instructions.txt" que contém as instruções para execução.
+
+    MemoryRAM memory("instructions/");                 // Instancia MemoryRAM com o arquivo "instructions.txt" que contém as instruções para execução.
     CPU cpu(memory);                                      // Cria um objeto CPU, passando a memória instanciada.
 
     _memory = memory;
@@ -69,7 +69,7 @@ void UC::select(int opcode) {
  */
 int ULA::operation(int var1, int var2, char operador) {
 
-    cout << "\n--------- CPU: Unidade Lógica Aritmética ---------\n";
+    cout << "[ULA] ";
 
     switch (operador) {
     case '+': // ADD

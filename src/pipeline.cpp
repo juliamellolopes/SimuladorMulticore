@@ -33,13 +33,18 @@ Pipeline::Pipeline() {
 
     _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = _uc._cpu._cores[_uc._cpu._coreAtivo]._reg2 = _uc._cpu._cores[_uc._cpu._coreAtivo]._regDest = 0;
 
-    loop();
+    for (int i = 0; i < TAM_INSTRUCTIONS; i++) {
+        cout << "--- Inciando processo " << _uc._memory.instrucaoAtual + 1 << " ---" << endl << endl;
+        InstructionLoop();
+        cout << endl << "Instruções " << ++_uc._memory.instrucaoAtual << " finalizadas." << endl << endl;
+    }
+
 }
 
 /**
  * @brief Controla o ciclo de execução do pipeline, processando todas as instruções.
  */
-void Pipeline::loop() {
+void Pipeline::InstructionLoop() {
     const int TAM_I = _uc._memory.getSize();      // tamanho de instruções 
     vector<bool> control(TAM_I, false);           // variavel de controle da utilização da instrução (true - usado, false - não usado)
     int cont = TAM_I;
@@ -64,10 +69,11 @@ void Pipeline::loop() {
  * Incrementa o contador de programa (PC) após a busca.
  */
 void Pipeline::InstructionFetch() {
-    cout << "\n--------- Pipeline Stage: Instruction Fetch ---------\n";
-    cout << "Buscando instrucao..." << endl;
+    cout << "[IF ] ";
+    cout << "Buscando instrucao...\n";
     _instrucaoAtual.assign(_uc._memory.getInstrucao(_uc._cpu.getPC()));
 
+    // cout << endl;
     InstructionDecode();
 
     _uc._cpu.incrementaPC();
@@ -96,7 +102,7 @@ int obterIndiceRegistrador(const string &reg) {
  * @brief Decodifica a instrução atual e identifica os registradores e o opcode.
  */
 void Pipeline::InstructionDecode() {
-    cout << "\n--------- Pipeline Stage: Instruction Decode ---------\n";
+    cout << "[ID ] ";
 
     cout << "Decodificando: " << _instrucaoAtual << endl;
 
@@ -139,8 +145,8 @@ void Pipeline::InstructionDecode() {
  * @param code Código da operação (opcode).
  */
 void Pipeline::Execute(string code) {
-    cout << "\n--------- Pipeline Stage: Execution ---------\n";
-    cout << "Chamando operações CPU" << endl;
+    cout << "[EX ] ";
+    cout << "Chamando operações CPU " << endl;
 
     if (code.compare("<") == 0) {
         _uc.select(4);

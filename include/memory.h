@@ -17,6 +17,7 @@
 #include <queue>
 
 #define TAM_CACHE 5
+#define TAM_INSTRUCTIONS 5
 
 using namespace std;
 class MemoryRAM {
@@ -26,10 +27,12 @@ public:
     string getInstrucao(int endereco);         // Retorna a instrução em um endereço específico.
     size_t getSize();                          // Retorna o número total de instruções carregadas.
     void escrever(int endereco, int valor);    // Armazena um valor em um endereço específico da memória.
+    size_t instrucaoAtual;
 
 private:
     unordered_map<int, int> _memoria;          // Simula o armazenamento de valores na memória.
-    vector<string>_instrucoes;                 // Armazena as instruções carregadas.
+    vector<vector<string>>_instrucoes;                 // Armazena as instruções carregadas.
+    // vector<string>_instrucoes;                 // Armazena as instruções carregadas.
 };
 
 class MemoryCache {

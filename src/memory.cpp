@@ -16,11 +16,11 @@ MemoryCache::MemoryCache(MemoryRAM memoryRAM) {
  * @param valor Valor a ser armazenado.
  */
 void MemoryCache::escrever(int endereco, int valor) {
-    cout << "Guadando informação na Cache..." << endl;
+    // cout << "Guadando informação na Cache..." << endl;
     _cache.push(make_pair(endereco, valor));
 
     if (_cache.size() >= TAM_CACHE) {
-        cout << "[Cache cheia]... Guardando o primeiro valor na memoria RAM" << endl;
+        // cout << "[Cache cheia]... Guardando o primeiro valor na memoria RAM" << endl;
         memoriaCheia();
     }
 }
@@ -44,21 +44,38 @@ void MemoryCache::memoriaCheia() {
  * @param path Caminho do arquivo de texto contendo as instruções a serem carregadas na memória.
  */
 MemoryRAM::MemoryRAM(string path) {
-    ifstream instrFile(path);
-    string linha;
 
-    if (instrFile.is_open()) {
-        
-        while (getline(instrFile, linha)) {
-            _instrucoes.push_back(linha);
+    string linha;
+    vector<string> instrucoesAtual;
+
+    for (int i = 0; i < TAM_INSTRUCTIONS; i++) {
+        ifstream instrFile(path + to_string(i + 1) + ".txt");
+
+        if (instrFile.is_open()) {
+
+            while (getline(instrFile, linha)) {
+                instrucoesAtual.push_back(linha);
+            }
+
+        } else {
+            cerr << "Erro ao abrir o arquivo de instruções." << endl;
+            exit(EXIT_FAILURE);
         }
 
-    } else {
-        cerr << "Erro ao abrir o arquivo de instruções." << endl;
-        exit(EXIT_FAILURE);
+        cout << "Instrucoes " << i + 1 << " carregadas!" << endl;
+
+        _instrucoes.push_back(instrucoesAtual);
+        instrucoesAtual.clear();
     }
 
-    cout << "Instrucoes carregadas!" << endl;
+    cout << endl;
+
+    if (_instrucoes.size() > 0) {
+        instrucaoAtual = 0;
+    } else {
+        cout << "Quantidade de instruções insuficientes." << endl;
+        exit(EXIT_SUCCESS);
+    }
 }
 
 /**
@@ -68,7 +85,7 @@ MemoryRAM::MemoryRAM(string path) {
  * @return Instrução armazenada no endereço.
  */
 string MemoryRAM::getInstrucao(int endereco) {
-    return _instrucoes.at(endereco);
+    return _instrucoes[instrucaoAtual].at(endereco);
 }
 
 /**
@@ -80,7 +97,7 @@ string MemoryRAM::getInstrucao(int endereco) {
  * @return O número total de instruções carregadas.
  */
 size_t MemoryRAM::getSize() {
-    return _instrucoes.size();
+    return _instrucoes[instrucaoAtual].size();
 }
 
 /**
@@ -95,5 +112,5 @@ size_t MemoryRAM::getSize() {
  */
 void MemoryRAM::escrever(int endereco, int valor) {
     _memoria[endereco] = valor;
-    cout << "Valor " << valor << " foi armazenado no endereco " << endereco << endl;
+    cout << "      -> Valor " << valor << " foi armazenado no endereco " << endereco << endl;
 }
