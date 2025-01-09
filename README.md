@@ -1,4 +1,3 @@
-
 # Simulador da Arquitetura de Von Neumann e Pipeline MIPS
 
 Este projeto implementa um simulador básico da arquitetura de Von Neumann e do pipeline MIPS em C++. O objetivo é permitir a visualização prática do funcionamento de componentes como a CPU, a memória principal, a memória cache, e o pipeline, além de demonstrar o impacto das instruções executadas em paralelo usando o pipeline MIPS.
@@ -13,7 +12,6 @@ Este projeto implementa um simulador básico da arquitetura de Von Neumann e do 
    - **EX (Execute)**: Executa a operação na ULA.
    - **MEM (Memory Access)**: Acessa a memória principal.
    - **WB (Write Back)**: Escreve o resultado no registrador.
-   
 4. **Simulação de Políticas de Cache**: A cache utiliza a política de substituição FIFO para gerenciar os dados armazenados.
 
 ## Estrutura do Projeto
@@ -24,12 +22,12 @@ O projeto está organizado da seguinte forma:
 /Simulador
   ├── src/
   │    ├── main.cpp          # Entrada principal do simulador
-  │    ├── cpu.cpp           # Implementação da CPU 
+  │    ├── cpu.cpp           # Implementação da CPU
   │    ├── memory.cpp        # Implementação da memória principal e cache
   │    ├── pipeline.cpp      # Implementação do pipeline MIPS
   │    └── uc.cpp            # Implementação da Unidade de Controle (UC) e ULA
   ├── include/
-  │    ├── cpu.h             # Declaração da CPU 
+  │    ├── cpu.h             # Declaração da CPU
   │    ├── memory.h          # Declaração da memória principal e cache
   │    ├── pipeline.h        # Declaração do pipeline MIPS
   │    ├── uc.h              # Declaração da UC e ULA
@@ -89,9 +87,11 @@ ADD R3 R1 R2
 STORE R3 15
 IF R1 > R2
 MULT R4 R1 R2
+```
 
 Ao rodar o simulador com o exemplo acima, a saída será semelhante a:
 
+```
 --------- Pipeline Stage: Instruction Fetch ---------
 Buscando instrucao...
 LOAD R1 10
@@ -145,8 +145,7 @@ Decodificando: MULT R4 R1 R2
 --------- Pipeline Stage: Execution ---------
 Executando operacao MULT: 10 * 0 = 0
 Valor 0 foi escrito no Registrador R4 no Core 0
-
-
+```
 
 ## Explicação do Funcionamento
 
@@ -172,15 +171,15 @@ O pipeline permite que as instruções sejam processadas em paralelo, simulando 
 
 ## Comandos Suportados
 
-| **Instrução** | **Descrição**                          | **Exemplo**       |
-|---------------|----------------------------------------|-------------------|
-| `LOAD`        | Carrega valor na memória para registro | `LOAD R1 10`      |
-| `STORE`       | Armazena registro na memória           | `STORE R3 15`     |
-| `ADD`         | Soma valores                          | `ADD R3 R1 R2`    |
-| `SUB`         | Subtrai valores                       | `SUB R3 R1 R2`    |
-| `MULT`        | Multiplica valores                    | `MULT R4 R1 R2`   |
-| `DIV`         | Divide valores                        | `DIV R5 R1 R2`    |
-| `IF`          | Compara valores                       | `IF R1 > R2`      |
+| **Instrução** | **Descrição**                          | **Exemplo**     |
+| ------------- | -------------------------------------- | --------------- |
+| `LOAD`        | Carrega valor na memória para registro | `LOAD R1 10`    |
+| `STORE`       | Armazena registro na memória           | `STORE R3 15`   |
+| `ADD`         | Soma valores                           | `ADD R3 R1 R2`  |
+| `SUB`         | Subtrai valores                        | `SUB R3 R1 R2`  |
+| `MULT`        | Multiplica valores                     | `MULT R4 R1 R2` |
+| `DIV`         | Divide valores                         | `DIV R5 R1 R2`  |
+| `IF`          | Compara valores                        | `IF R1 > R2`    |
 
 ## Autor
 
