@@ -159,6 +159,20 @@ Executando operacao MULT: 10 * 0 = 0
 Valor 0 foi escrito no Registrador R4 no Core 0
 ```
 
+### Comandos Suportados
+
+Abaixo segue os comandos que o simulador suporta atualmente caso queira alterar o `instructions.txt`:
+
+| **Instrução** | **Descrição**                          | **Exemplo**     |
+| ------------- | -------------------------------------- | --------------- |
+| `LOAD`        | Carrega valor na memória para registro | `LOAD R1 10`    |
+| `STORE`       | Armazena registro na memória           | `STORE R3 15`   |
+| `ADD`         | Soma valores                           | `ADD R3 R1 R2`  |
+| `SUB`         | Subtrai valores                        | `SUB R3 R1 R2`  |
+| `MULT`        | Multiplica valores                     | `MULT R4 R1 R2` |
+| `DIV`         | Divide valores                         | `DIV R5 R1 R2`  |
+| `IF`          | Compara valores                        | `IF R1 > R2`    |
+
 ## Fluxo de Funcionamento do Simulador
 
 O simulador segue o seguinte fluxo para executar instruções usando a arquitetura de Von Neumann e o pipeline MIPS:
@@ -188,8 +202,6 @@ O simulador segue o seguinte fluxo para executar instruções usando a arquitetu
 4. **Finalização**:
    - O pipeline continua até que todas as instruções sejam executadas.
 
----
-
 ## Fluxograma de Interação dos Arquivos
 
 ```plaintext
@@ -203,18 +215,6 @@ cpu.cpp   memory.cpp
            ↘
          core.h
 ```
-
-## Comandos Suportados
-
-| **Instrução** | **Descrição**                          | **Exemplo**     |
-| ------------- | -------------------------------------- | --------------- |
-| `LOAD`        | Carrega valor na memória para registro | `LOAD R1 10`    |
-| `STORE`       | Armazena registro na memória           | `STORE R3 15`   |
-| `ADD`         | Soma valores                           | `ADD R3 R1 R2`  |
-| `SUB`         | Subtrai valores                        | `SUB R3 R1 R2`  |
-| `MULT`        | Multiplica valores                     | `MULT R4 R1 R2` |
-| `DIV`         | Divide valores                         | `DIV R5 R1 R2`  |
-| `IF`          | Compara valores                        | `IF R1 > R2`    |
 
 ## Autor
 
