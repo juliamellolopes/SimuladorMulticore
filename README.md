@@ -81,8 +81,9 @@ make clean
 
 ### Exemplo de Arquivo de Instrução
 
-Um arquivo de entrada (instructions.txt) deve conter instruções no seguinte formato:
+O arquivo de entrada (`instructions.txt`) deve conter as instruções no seguinte formato:
 
+```plaintext
 LOAD R1 10
 ADD R3 R1 R2
 STORE R3 15
@@ -93,11 +94,58 @@ Ao rodar o simulador com o exemplo acima, a saída será semelhante a:
 
 --------- Pipeline Stage: Instruction Fetch ---------
 Buscando instrucao...
+LOAD R1 10
 
 --------- Pipeline Stage: Instruction Decode ---------
 Decodificando: LOAD R1 10
+
+--------- Pipeline Stage: Execution ---------
+Executando operacao LOAD
 Valor 10 foi escrito no Registrador R1 no Core 0
-...
+
+--------- Pipeline Stage: Instruction Fetch ---------
+Buscando instrucao...
+ADD R3 R1 R2
+
+--------- Pipeline Stage: Instruction Decode ---------
+Decodificando: ADD R3 R1 R2
+
+--------- Pipeline Stage: Execution ---------
+Executando operacao ADD: 10 + 0 = 10
+Valor 10 foi escrito no Registrador R3 no Core 0
+
+--------- Pipeline Stage: Instruction Fetch ---------
+Buscando instrucao...
+STORE R3 15
+
+--------- Pipeline Stage: Instruction Decode ---------
+Decodificando: STORE R3 15
+
+--------- Pipeline Stage: Execution ---------
+Guardando o valor no endereço 15 da memória
+Valor 10 foi armazenado no endereco 15
+
+--------- Pipeline Stage: Instruction Fetch ---------
+Buscando instrucao...
+IF R1 > R2
+
+--------- Pipeline Stage: Instruction Decode ---------
+Decodificando: IF R1 > R2
+
+--------- Pipeline Stage: Execution ---------
+Executando operacao IF: 10 > 0 = Verdade
+
+--------- Pipeline Stage: Instruction Fetch ---------
+Buscando instrucao...
+MULT R4 R1 R2
+
+--------- Pipeline Stage: Instruction Decode ---------
+Decodificando: MULT R4 R1 R2
+
+--------- Pipeline Stage: Execution ---------
+Executando operacao MULT: 10 * 0 = 0
+Valor 0 foi escrito no Registrador R4 no Core 0
+
 
 
 ## Explicação do Funcionamento
