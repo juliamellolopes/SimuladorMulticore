@@ -37,10 +37,24 @@ O projeto está organizado da seguinte forma:
 
 ### Arquivos:
 
-- `main.cpp`: Responsável por simular uma execução de uma instrução usando o pipeline MIPS e cache.
-- `cpu.cpp`/`cpu.h`: Contém a lógica da CPU, incluindo os registradores, Unidade Lógica Aritmética (ULA) e Unidade de Controle.
-- `memory.cpp`/`memory.h`: Simula a memória principal e a cache com política de substituição FIFO.
-- `pipeline.cpp`/`pipeline.h`: Implementa os cinco estágios do pipeline MIPS.
+### Arquivos:
+
+- `main.cpp`: Ponto de entrada do simulador. Inicializa o pipeline e dá início ao loop de execução das instruções carregadas a partir do arquivo `instructions.txt`.
+- `cpu.cpp`/`cpu.h`: Implementa a lógica da CPU, incluindo:
+  - Gerenciamento de múltiplos núcleos com registradores.
+  - Operações de leitura e escrita nos registradores e na memória.
+  - Incremento e controle do contador de programa (`PC`).
+- `memory.cpp`/`memory.h`: Simula a memória principal e a cache:
+  - **Memória Principal (RAM)**: Carrega instruções de um arquivo de entrada e armazena valores em endereços específicos.
+  - **Memória Cache**: Implementada como uma fila FIFO com descarte automático para a memória principal quando cheia.
+- `pipeline.cpp`/`pipeline.h`: Implementa o pipeline MIPS:
+  - **Instruction Fetch (IF)**: Busca a próxima instrução na memória.
+  - **Instruction Decode (ID)**: Decodifica a instrução e identifica os registradores e operandos envolvidos.
+  - **Execute (EX)**: Executa a operação utilizando a Unidade Lógica Aritmética (ULA) e a Unidade de Controle (UC).
+  - **Memória (MEM)** e **Write Back (WB)** são implicitamente tratados conforme as instruções.
+  - Controla o ciclo de execução das instruções com um loop principal.
+- `uc.cpp`/`uc.h`: Implementa a Unidade de Controle (UC), que gerencia as operações baseadas nos opcodes, delegando as operações aritméticas para a ULA e interagindo com a memória e os registradores.
+- `core.h`: Define a estrutura básica de registradores, com suporte para múltiplos núcleos (`Cores`) organizados em um vetor.
 
 ## Requisitos
 
