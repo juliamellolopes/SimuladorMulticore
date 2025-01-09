@@ -37,8 +37,6 @@ O projeto está organizado da seguinte forma:
 
 ### Arquivos:
 
-### Arquivos:
-
 - `main.cpp`: Ponto de entrada do simulador. Inicializa o pipeline e dá início ao loop de execução das instruções carregadas a partir do arquivo `instructions.txt`.
 - `cpu.cpp`/`cpu.h`: Implementa a lógica da CPU, incluindo:
   - Gerenciamento de múltiplos núcleos com registradores.
@@ -161,27 +159,50 @@ Executando operacao MULT: 10 * 0 = 0
 Valor 0 foi escrito no Registrador R4 no Core 0
 ```
 
-## Explicação do Funcionamento
+## Fluxo de Funcionamento do Simulador
 
-### CPU e UC
+O simulador segue o seguinte fluxo para executar instruções usando a arquitetura de Von Neumann e o pipeline MIPS:
 
-A CPU gerencia os núcleos e registradores, enquanto a Unidade de Controle coordena as operações com base nos opcodes.
+1. **Inicialização**:
+   - `main.cpp` cria uma instância do `Pipeline`, que é responsável por coordenar a execução.
+   - A `Unidade de Controle (UC)` é instanciada com a memória principal (`MemoryRAM`) carregada a partir do arquivo `instructions.txt`.
 
-### Memória e Cache
+2. **Pipeline MIPS**:
+   - **IF (Instruction Fetch)**: 
+     - A próxima instrução é buscada da `MemoryRAM` pelo pipeline.
+     - O contador de programa (`PC`) é incrementado.
+   - **ID (Instruction Decode)**: 
+     - A instrução é decodificada pela `Unidade de Controle (UC)`, que identifica o opcode e os operandos.
+     - Registradores e operandos são configurados.
+   - **EX (Execute)**:
+     - A `UC` delega operações aritméticas à `Unidade Lógica Aritmética (ULA)`, que executa a operação.
+     - Para instruções condicionais (`IF`), o resultado da comparação é avaliado.
+   - **MEM (Memory Access)**:
+     - Dependendo da instrução (`LOAD` ou `STORE`), a `MemoryCache` ou `MemoryRAM` é acessada para leitura ou escrita.
+   - **WB (Write Back)**:
+     - Os resultados das operações são escritos de volta nos registradores da `CPU`.
 
-A memória principal (RAM) armazena as instruções, enquanto a cache age como um buffer FIFO. Quando a cache atinge seu limite de capacidade, os dados mais antigos são transferidos para a RAM, liberando espaço para novas operações.
+3. **Gerenciamento de Memória**:
+   - A `MemoryCache` utiliza uma política FIFO para gerenciar dados. Quando cheia, transfere os dados mais antigos para a `MemoryRAM`.
 
-### Pipeline MIPS
+4. **Finalização**:
+   - O pipeline continua até que todas as instruções sejam executadas.
 
-O pipeline MIPS simula a execução paralela de instruções em cinco estágios:
+---
 
-- **Instruction Fetch (IF)**: Busca a instrução da memória.
-- **Instruction Decode (ID)**: Decodifica a instrução e identifica os operandos e o tipo de operação.
-- **Execute (EX)**: A ULA executa a operação aritmética e, caso necessário, armazena o resultado na memória.
-- **Memory Access (MEM)**: Lê ou escreve na memória.
-- **Write Back (WB)**: Escreve o resultado de volta nos registradores.
+## Fluxograma de Interação dos Arquivos
 
-O pipeline permite que as instruções sejam processadas em paralelo, simulando um sistema de execução com três estágios básicos.
+```plaintext
+main.cpp
+   ↓
+pipeline.cpp
+   ↓
+uc.cpp
+ ↙      ↘
+cpu.cpp   memory.cpp
+           ↘
+         core.h
+```
 
 ## Comandos Suportados
 
