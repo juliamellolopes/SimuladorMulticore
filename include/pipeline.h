@@ -3,13 +3,13 @@
 
 #include "memory.h"
 #include "cpu.h"
+#include "uc.h"
 
 #define DBG(x) std::cerr << #x << " = " << (x) <<std::endl;
 
 class Pipeline {
 public:
-    Pipeline() {}                                             // Construtor padrão.
-    Pipeline(MemoryRAM &memory, CPU &cpu);                    // Inicializa o pipeline com referências para a memória e CPU.
+    Pipeline();                                               // Construtor padrão.
     void InstructionFetch();                                  // Busca a próxima instrução na memória.
     void InstructionDecode();                                 // Decodifica a instrução buscada, identificando o opcode e registradores.
     void Execute(string code);                                // Executa a instrução baseada no código passado.
@@ -19,8 +19,7 @@ public:
 private:
     string _instrucaoAtual;                                   // Armazena a instrução que está sendo processada.
     string _opcode;                                           // Guarda o opcode da instrução atual.
-    MemoryRAM _memoryRAM;                                     // Referência à memória RAM.
-    CPU _cpu;                                                 // Referência à CPU.
+    UC _uc;
 };
 
 #endif

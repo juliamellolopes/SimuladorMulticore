@@ -23,15 +23,18 @@ O projeto está organizado da seguinte forma:
 ```
 /Simulador
   ├── src/
-  │    ├── main.cpp          # Arquivo principal que inicia o simulador
-  │    ├── cpu.cpp           # Implementação das funções da CPU e ULA
-  │    ├── memory.cpp        # Implementação das funções de memória e cache
-  │    └── pipeline.cpp      # Implementação do pipeline MIPS
+  │    ├── main.cpp          # Entrada principal do simulador
+  │    ├── cpu.cpp           # Implementação da CPU 
+  │    ├── memory.cpp        # Implementação da memória principal e cache
+  │    ├── pipeline.cpp      # Implementação do pipeline MIPS
+  │    └── uc.cpp            # Implementação da Unidade de Controle (UC) e ULA
   ├── include/
-  │    ├── cpu.h             # Declaração das funções da CPU e ULA
-  │    ├── memory.h          # Declaração das funções de memória e cache
-  │    └── pipeline.h        # Declaração das funções do pipeline MIPS
-  └── Makefile               # Arquivo Make para compilar e rodar o projeto
+  │    ├── cpu.h             # Declaração da CPU 
+  │    ├── memory.h          # Declaração da memória principal e cache
+  │    ├── pipeline.h        # Declaração do pipeline MIPS
+  │    ├── uc.h              # Declaração da UC e ULA
+  │    └── core.h            # Estrutura básica de registradores
+  └── Makefile               # Script Make para compilação
 ```
 
 ### Arquivos:
@@ -76,11 +79,32 @@ Para remover os arquivos compilados (objetos e binários), execute:
 make clean
 ```
 
+### Exemplo de Arquivo de Instrução
+
+Um arquivo de entrada (instructions.txt) deve conter instruções no seguinte formato:
+
+LOAD R1 10
+ADD R3 R1 R2
+STORE R3 15
+IF R1 > R2
+MULT R4 R1 R2
+
+Ao rodar o simulador com o exemplo acima, a saída será semelhante a:
+
+--------- Pipeline Stage: Instruction Fetch ---------
+Buscando instrucao...
+
+--------- Pipeline Stage: Instruction Decode ---------
+Decodificando: LOAD R1 10
+Valor 10 foi escrito no Registrador R1 no Core 0
+...
+
+
 ## Explicação do Funcionamento
 
-### CPU e Registradores
+### CPU e UC
 
-A CPU possui múltiplos registradores organizados em núcleos, com suporte para uma ULA que executa operações aritméticas como soma (+), subtração (-), multiplicação (*) e divisão (/). A Unidade de Controle processa as instruções com base nos opcodes, gerenciando o fluxo dos dados entre os registradores e a memória.
+A CPU gerencia os núcleos e registradores, enquanto a Unidade de Controle coordena as operações com base nos opcodes.
 
 ### Memória e Cache
 
@@ -97,6 +121,18 @@ O pipeline MIPS simula a execução paralela de instruções em cinco estágios:
 - **Write Back (WB)**: Escreve o resultado de volta nos registradores.
 
 O pipeline permite que as instruções sejam processadas em paralelo, simulando um sistema de execução com três estágios básicos.
+
+## Comandos Suportados
+
+| **Instrução** | **Descrição**                          | **Exemplo**       |
+|---------------|----------------------------------------|-------------------|
+| `LOAD`        | Carrega valor na memória para registro | `LOAD R1 10`      |
+| `STORE`       | Armazena registro na memória           | `STORE R3 15`     |
+| `ADD`         | Soma valores                          | `ADD R3 R1 R2`    |
+| `SUB`         | Subtrai valores                       | `SUB R3 R1 R2`    |
+| `MULT`        | Multiplica valores                    | `MULT R4 R1 R2`   |
+| `DIV`         | Divide valores                        | `DIV R5 R1 R2`    |
+| `IF`          | Compara valores                       | `IF R1 > R2`      |
 
 ## Autor
 

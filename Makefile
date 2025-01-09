@@ -1,6 +1,7 @@
 # Compilador e flags
 CXX = g++
-CXXFLAGS = -Iinclude
+# CXXFLAGS = 
+CXXFLAGS = -Iinclude -Wall -Wextra -Werror
 # CXXFLAGS = -Iinclude -Wall
 
 # Diretórios de código-fonte e destino dos binários
