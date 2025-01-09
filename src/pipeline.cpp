@@ -1,6 +1,14 @@
 #include "../include/pipeline.h"
 
-// Separa uma instrução em tokens com base em um delimitador (' '), retornando um vetor de strings.
+/**
+ * @brief Divide uma instrução em tokens com base em um delimitador (' ').
+ *
+ * Esta função é utilizada para separar uma instrução em partes, como o opcode e os operandos,
+ * retornando um vetor de strings. Cada token representa uma parte da instrução (ex.: "ADD R1 R2").
+ *
+ * @param instrucao A instrução a ser tokenizada.
+ * @return Um vetor de strings, onde cada elemento é um token extraído da instrução.
+ */
 vector<string> Pipeline::tokenizar(string &instrucao) {
     char del = ' ';
 
@@ -14,7 +22,11 @@ vector<string> Pipeline::tokenizar(string &instrucao) {
     return tokens;
 }
 
-// Inicializa o pipeline com referências para a memória e a CPU, ajustando valores iniciais e iniciando o loop de execução.
+/**
+ * @brief Inicializa o pipeline com referências para memória e CPU.
+ *
+ * Configura valores iniciais e inicia o loop de execução.
+ */
 Pipeline::Pipeline() {
     _instrucaoAtual.assign("");
     _opcode.assign("");
@@ -24,17 +36,21 @@ Pipeline::Pipeline() {
     loop();
 }
 
-//  Controla o ciclo de execução de instruções. Itera até que todas as instruções na memória sejam executadas, chamando a etapa de busca (InstructionFetch) para instruções ainda não processadas.
+/**
+ * @brief Controla o ciclo de execução do pipeline, processando todas as instruções.
+ */
 void Pipeline::loop() {
-    const int TAM_I = _uc._memory.getSize();   // tamanho de instruções 
-    vector<bool> control(TAM_I, false);       // variavel de controle da utilização da instrução (true - usado, false - não usado)
+    const int TAM_I = _uc._memory.getSize();      // tamanho de instruções 
+    vector<bool> control(TAM_I, false);           // variavel de controle da utilização da instrução (true - usado, false - não usado)
     int cont = TAM_I;
 
     while (cont > 1) {
+
         if (control[_uc._cpu.getPC()] == false) {
             cont = TAM_I;
             control[_uc._cpu.getPC()] = true;
             InstructionFetch();
+
         } else {
             cont--;
         }
@@ -42,7 +58,11 @@ void Pipeline::loop() {
 
 }
 
-// Executa a busca da instrução atual na memória e incrementa o contador de programa (PC). Passa a instrução para a próxima etapa, InstructionDecode.
+/**
+ * @brief Realiza a busca da instrução atual na memória principal.
+ *
+ * Incrementa o contador de programa (PC) após a busca.
+ */
 void Pipeline::InstructionFetch() {
     cout << "\n--------- Pipeline Stage: Instruction Fetch ---------\n";
     cout << "Buscando instrucao..." << endl;
@@ -53,16 +73,28 @@ void Pipeline::InstructionFetch() {
     _uc._cpu.incrementaPC();
 }
 
-// Converte um nome de registrador (como R1) em seu índice numérico. Exibe uma mensagem de erro caso o registrador seja inválido.
+/**
+ * @brief Converte o nome de um registrador (como R1) em seu índice numérico.
+ *
+ * Esta função verifica se o nome do registrador começa com a letra 'R' e, em caso positivo,
+ * converte o número subsequente em um inteiro que representa o índice do registrador.
+ * Se o nome do registrador for inválido, uma mensagem de erro será exibida e o programa será encerrado.
+ *
+ * @param reg Nome do registrador (ex.: "R1").
+ * @return O índice numérico correspondente ao registrador.
+ * @throws Termina a execução se o nome do registrador for inválido.
+ */
 int obterIndiceRegistrador(const string &reg) {
     if (reg[0] == 'R') {
-        return stoi(reg.substr(1)); // Converte o número após 'R' em um inteiro
+        return stoi(reg.substr(1));         // Converte o número após 'R' em um inteiro
     }
     cerr << "Erro: Registrador inválido " << reg << endl;
     exit(EXIT_FAILURE);
 }
 
-// Decodifica a instrução atual, identificando o opcode e os registradores envolvidos, utilizando a função auxiliar obterIndiceRegistrador para interpretar índices de registradores.
+/**
+ * @brief Decodifica a instrução atual e identifica os registradores e o opcode.
+ */
 void Pipeline::InstructionDecode() {
     cout << "\n--------- Pipeline Stage: Instruction Decode ---------\n";
 
@@ -72,8 +104,10 @@ void Pipeline::InstructionDecode() {
     _opcode = tokens[0];
 
     if (_opcode.compare("LOAD") == 0) {
+
         _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
         auto valor = stoi(tokens[2]);
+
         _uc._cpu.escreverRegistrador(_uc._cpu._cores[_uc._cpu._coreAtivo]._reg1, valor);
 
     } else if (_opcode.compare("STORE") == 0) {
@@ -81,12 +115,16 @@ void Pipeline::InstructionDecode() {
         _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
 
         _uc._cpu.escreverNaMemoria(endereco);
+
     } else if (_opcode.compare("IF") == 0) {
+
         _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
         _uc._cpu._cores[_uc._cpu._coreAtivo]._reg2 = obterIndiceRegistrador(tokens[3]);
 
         Execute(tokens[2]);
+
     } else {
+
         _uc._cpu._cores[_uc._cpu._coreAtivo]._regDest = obterIndiceRegistrador(tokens[1]);
         _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[2]);
         _uc._cpu._cores[_uc._cpu._coreAtivo]._reg2 = obterIndiceRegistrador(tokens[3]);
@@ -95,7 +133,11 @@ void Pipeline::InstructionDecode() {
     }
 }
 
-// Etapa de Execução
+/**
+ * @brief Executa a operação correspondente ao opcode decodificado.
+ *
+ * @param code Código da operação (opcode).
+ */
 void Pipeline::Execute(string code) {
     cout << "\n--------- Pipeline Stage: Execution ---------\n";
     cout << "Chamando operações CPU" << endl;

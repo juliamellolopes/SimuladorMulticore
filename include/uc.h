@@ -1,3 +1,11 @@
+/**
+ * @file uc.h
+ * @brief Declaração da Unidade de Controle (UC) e da Unidade Lógica Aritmética (ULA).
+ *
+ * A UC gerencia a decodificação das instruções e delega operações aritméticas para a ULA.
+ * É utilizada pelo pipeline para executar operações como ADD, SUB, MULT, e condicionais.
+ */
+
 #ifndef UC_H   
 #define UC_H   
 

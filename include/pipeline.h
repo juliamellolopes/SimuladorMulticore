@@ -1,3 +1,11 @@
+/**
+ * @file pipeline.h
+ * @brief Declaração da classe Pipeline, que coordena os cinco estágios do pipeline MIPS.
+ *
+ * A classe Pipeline controla o fluxo de instruções pelo pipeline e gerencia as interações entre a
+ * Unidade de Controle (UC), CPU, e memória. É a classe principal para simular o pipeline.
+ */
+
 #ifndef PIPELINE_H
 #define PIPELINE_H
 

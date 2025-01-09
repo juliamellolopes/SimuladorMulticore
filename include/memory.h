@@ -1,3 +1,12 @@
+/**
+ * @file memory.h
+ * @brief Declaração das classes MemoryRAM e MemoryCache.
+ *
+ * Estas classes simulam a memória principal (RAM) e a memória cache com política de substituição FIFO.
+ * São utilizadas pela CPU para operações de leitura e escrita durante a execução de instruções.
+ */
+
+
 #pragma once
 
 #include <iostream>

@@ -1,4 +1,10 @@
-// 
+/**
+ * @file cpu.h
+ * @brief Declaração da classe CPU e métodos relacionados.
+ *
+ * A classe CPU gerencia múltiplos núcleos e registradores, e interage com a memória principal (RAM)
+ * e memória cache para execução das instruções. Utilizada pelo pipeline para processar as operações.
+ */
 
 #ifndef CPU_H
 #define CPU_H

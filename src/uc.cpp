@@ -1,16 +1,22 @@
 #include "../include/uc.h"
 
+/**
+ * @brief Inicializa a Unidade de Controle com memória principal e CPU.
+ */
 UC::UC() {
-    // Instancia MemoryRAM com o arquivo "instructions.txt" que contém as instruções para execução.
-    MemoryRAM memory("instructions.txt");
-    // Cria um objeto CPU, passando a memória instanciada.
-    CPU cpu(memory);
+    
+    MemoryRAM memory("instructions.txt");                 // Instancia MemoryRAM com o arquivo "instructions.txt" que contém as instruções para execução.
+    CPU cpu(memory);                                      // Cria um objeto CPU, passando a memória instanciada.
 
     _memory = memory;
     _cpu = cpu;
 }
 
-// Executa operações aritméticas com base no opcode (ADD, SUB, MULT, DIV), chamando a função ULA para realizar a operação e exibindo mensagens para cada operação realizada.
+/**
+ * @brief Executa a operação correspondente ao opcode usando a ULA.
+ *
+ * @param opcode Código da operação.
+ */
 void UC::select(int opcode) {
     int valor1 = _cpu.lerRegistrador(_cpu._cores[_cpu._coreAtivo]._reg1);
     int valor2 = _cpu.lerRegistrador(_cpu._cores[_cpu._coreAtivo]._reg2);
@@ -53,14 +59,13 @@ void UC::select(int opcode) {
     _cpu.escreverRegistrador(_cpu._cores[_cpu._coreAtivo]._regDest, res);
 }
 
-// Etapa de execução
 /**
- * @brief realiza operação entre var1 e var2 
- * 
- * @param var1 
- * @param var2 
- * @param operador 
- * @return int 
+ * @brief Realiza uma operação aritmética ou condicional entre dois valores.
+ *
+ * @param var1 Primeiro valor.
+ * @param var2 Segundo valor.
+ * @param operador Operação a ser executada (+, -, *, /, <, >, =).
+ * @return Resultado da operação.
  */
 int ULA::operation(int var1, int var2, char operador) {
 
