@@ -178,14 +178,16 @@ Abaixo segue os comandos que o simulador suporta atualmente caso queira alterar 
 O simulador segue o seguinte fluxo para executar instruções usando a arquitetura de Von Neumann e o pipeline MIPS:
 
 1. **Inicialização**:
+
    - `main.cpp` cria uma instância do `Pipeline`, que é responsável por coordenar a execução.
    - A `Unidade de Controle (UC)` é instanciada com a memória principal (`MemoryRAM`) carregada a partir do arquivo `instructions.txt`.
 
 2. **Pipeline MIPS**:
-   - **IF (Instruction Fetch)**: 
+
+   - **IF (Instruction Fetch)**:
      - A próxima instrução é buscada da `MemoryRAM` pelo pipeline.
      - O contador de programa (`PC`) é incrementado.
-   - **ID (Instruction Decode)**: 
+   - **ID (Instruction Decode)**:
      - A instrução é decodificada pela `Unidade de Controle (UC)`, que identifica o opcode e os operandos.
      - Registradores e operandos são configurados.
    - **EX (Execute)**:
@@ -197,6 +199,7 @@ O simulador segue o seguinte fluxo para executar instruções usando a arquitetu
      - Os resultados das operações são escritos de volta nos registradores da `CPU`.
 
 3. **Gerenciamento de Memória**:
+
    - A `MemoryCache` utiliza uma política FIFO para gerenciar dados. Quando cheia, transfere os dados mais antigos para a `MemoryRAM`.
 
 4. **Finalização**:
@@ -218,4 +221,8 @@ cpu.cpp   memory.cpp
 
 ## Autor
 
-Este projeto foi desenvolvido por Julia Mello Loeps Gonçalves.
+Este projeto foi desenvolvido por **Julia Mello Lopes Gonçalves**, estudante de Engenharia da Computação, como parte de um trabalho prático para aprofundar o entendimento sobre a arquitetura de um sistema operacional.
+
+### Contato
+
+- **E-mail**: juliamellolopesgoncalves@gmail.com
