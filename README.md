@@ -218,6 +218,9 @@ cpu.cpp   memory.cpp
            ↘
          core.h
 ```
+## Artigo do Projeto
+
+Link direcionado para visualização do artigo: https://www.overleaf.com/read/ngyvjkwpmfyq#4508cc
 
 ## Autor
 
