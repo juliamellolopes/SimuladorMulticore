@@ -25,3 +25,9 @@ void MemoryCache::memoriaCheia() {
     _cache.pop();
     _memoryRAM.escrever(retirar.first, retirar.second);
 }
+
+void MemoryCache::liberarCache() {
+    while (_cache.size() != 0) {
+        memoriaCheia();
+    }
+}

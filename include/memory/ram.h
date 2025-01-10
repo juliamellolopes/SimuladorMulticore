@@ -31,5 +31,5 @@ public:
     void incrementaInstrucao();
     void escrever(int endereco, int valor);
     void mostrarDados();
-
+    void mostrarTodosDados();
 };

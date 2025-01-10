@@ -11,7 +11,6 @@
 MemoryRAM::MemoryRAM(string path) {
 
     _memoria = vector<MemoryCell>(TAM_CELL, monostate{});
-    // cout << _memoria.size() << endl;
 
     string linha;
     vector<string> instrucoesAtual;
@@ -88,24 +87,31 @@ void MemoryRAM::incrementaInstrucao() {
  * @param valor O valor a ser armazenado no endereço especificado.
  */
 void MemoryRAM::escrever(int endereco, int valor) {
-    // cout << endereco << endl;
-    // cout << valor << endl;
-    // cout << _memoria.size() << endl;
     _memoria[endereco] = valor;
     cout << "      -> Valor " << valor << " foi armazenado no endereco " << endereco << endl;
 }
 
-void MemoryRAM::mostrarDados() {
-    // cout << _memoria.size() << endl;
+void MemoryRAM::mostrarTodosDados() {
     for (size_t i = 0; i < _memoria.size(); ++i) {
         cout << "Memory[" << i << "]: ";
         visit([](auto &&value) {
             if constexpr (std::is_same_v<decay_t<decltype(value)>, monostate>) {
-                cout << "null";
+                // cout << "null";
             } else {
                 std::cout << value;
             }
         }, _memoria[i]);
         cout << endl;
+    }
+}
+
+void MemoryRAM::mostrarDados() {
+    cout << endl;
+    for (size_t i = 0; i < _memoria.size(); ++i) {
+        visit([i](auto &&value) {
+            if constexpr (!std::is_same_v<std::decay_t<decltype(value)>, std::monostate>) {
+                std::cout << "Memory[" << i << "]: " << value << std::endl;
+            }
+        }, _memoria[i]);
     }
 }

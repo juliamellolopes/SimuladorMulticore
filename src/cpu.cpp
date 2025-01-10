@@ -20,6 +20,9 @@ void CPU::inicializar() {
         cout << endl << "Instruções " << _memoryRAM.getInstrucaoAtual() << " finalizadas." << endl << endl;
         _memoryRAM.incrementaInstrucao();
     }
+
+    _memoryCache.liberarCache();
+    _memoryRAM.mostrarDados();
 }
 
 /**
@@ -41,7 +44,8 @@ void CPU::InstructionLoop() {
 
             if (code.size() != 0) {
                 auto valores = _pipeline.Execute(code);
-                select(valores[0], valores[1], valores[2]);
+                auto res = select(valores[0], valores[1], valores[2]);
+                _pipeline.escreverRegistrador(_cores[_coreAtivo]._regDest, res);
             }
 
             incrementaPC();
@@ -49,9 +53,6 @@ void CPU::InstructionLoop() {
             cont--;
         }
     }
-
-    _memoryRAM.mostrarDados();
-
 }
 
 /**

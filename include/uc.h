@@ -21,5 +21,5 @@ public:
     UC() {}
     ~UC() {}
 
-    void select(int opcode, int valor1, int valor2);
+    int select(int opcode, int valor1, int valor2);
 };

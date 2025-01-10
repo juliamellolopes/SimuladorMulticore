@@ -42,7 +42,7 @@ int ULA::operation(int var1, int var2, char operador) {
  *
  * @param opcode Código da operação.
  */
-void UC::select(int opcode, int valor1, int valor2) {
+int UC::select(int opcode, int valor1, int valor2) {
     int res;
 
     switch (opcode) {
@@ -79,5 +79,6 @@ void UC::select(int opcode, int valor1, int valor2) {
         break;
     }
 
-    // escreverRegistrador(_cores[_coreAtivo]._regDest, res);
+    return res;
+    //  escreverRegistrador(_cores[_coreAtivo]._regDest, res);
 }
