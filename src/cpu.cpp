@@ -1,25 +1,57 @@
 #include "../include/cpu.h"
 
-/**
- * @brief Inicializa a CPU com uma referência de memória principal.
- *
- * Configura os registradores, contador de programa (PC) e núcleo ativo (Core).
- * @param memory Referência para a memória principal (RAM).
- */
-CPU::CPU(MemoryRAM &memory) {
-    _memoryRAM = memory;
+void CPU::init() {
     _PC = 0;
     _coreAtivo = 0;
     _cores = vector<CORE>(TAM_C);
+}
+
+void CPU::inicializar() {
+
     cout << "Iniciando Simulacao com " << TAM_C << " Cores e " << TAM_R << " Registradores cada" << endl << endl;
+    cout << _coreAtivo << endl;
+
+
+    _cores[_coreAtivo]._reg1 = _cores[_coreAtivo]._reg2 = _cores[_coreAtivo]._regDest = 0;
+
+    for (int i = 0; i < TAM_INSTRUCTIONS; i++) {
+        cout << "--- Inciando processo " << _memoryRAM.getInstrucaoAtual() << " ---" << endl << endl;
+        InstructionLoop();
+        cout << endl << "Instruções " << _memoryRAM.getInstrucaoAtual() << " finalizadas." << endl << endl;
+        _memoryRAM.incrementaInstrucao();
+    }
 }
 
 /**
- * @brief Retorna o valor do contador de programa (PC).
- * @return Valor atual do contador de programa.
+ * @brief Controla o ciclo de execução do pipeline, processando todas as instruções.
  */
-int CPU::getPC() {
-    return _PC;
+void CPU::InstructionLoop() {
+    const int TAM_I = _memoryRAM.getSize();
+    vector<bool> control(TAM_I, false);
+    int cont = TAM_I;
+
+    while (cont > 1) {
+
+        if (control[_PC] == false) {
+            cont = TAM_I;
+            control[_PC] = true;
+
+            _pipeline.InstructionFetch();
+            auto code = _pipeline.InstructionDecode();
+
+            if (code.size() != 0) {
+                auto valores = _pipeline.Execute(code);
+                select(valores[0], valores[1], valores[2]);
+            }
+
+            incrementaPC();
+        } else {
+            cont--;
+        }
+    }
+
+    _memoryRAM.mostrarDados();
+
 }
 
 /**
@@ -28,49 +60,4 @@ int CPU::getPC() {
 void CPU::incrementaPC() {
     _PC++;
     _PC = _PC % _memoryRAM.getSize();
-}
-
-/**
- * @brief Lê o valor de um registrador específico do núcleo ativo.
- *
- * @param reg Índice do registrador a ser lido.
- * @return Valor armazenado no registrador.
- */
-
-int CPU::lerRegistrador(int reg) {
-    if (reg > 0 && reg <= TAM_R) {
-
-        return _cores[_coreAtivo]._registradores[reg - 1];
-
-    } else {
-        cerr << "Erro: Registrador invalido!" << endl;
-        return -1;
-    }
-}
-
-/**
- * @brief Escreve um valor em um registrador específico do núcleo ativo.
- *
- * @param reg Índice do registrador a ser escrito.
- * @param valor Valor a ser armazenado no registrador.
- */
-void CPU::escreverRegistrador(int reg, int valor) {
-    if (reg > 0 && reg <= TAM_R) {
-
-        _cores[_coreAtivo]._registradores[reg - 1] = valor;
-        cout << "      -> Valor " << valor << " foi escrito no Registrador R" << reg << " no Core " << _coreAtivo << endl << endl;
-
-    } else {
-        cerr << "Erro: Registrador invalido!" << endl;
-    }
-}
-
-/**
- * @brief Escreve o valor de um registrador em um endereço específico na memória.
- *
- * @param endereco Endereço de memória onde o valor será escrito.
- */
-void CPU::escreverNaMemoria(int endereco) {
-    int valor = lerRegistrador(_cores[_coreAtivo]._reg1);
-    _memoryCache.escrever(endereco, valor);
 }

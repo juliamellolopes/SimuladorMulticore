@@ -1,8 +1,7 @@
 # Compilador e flags
 CXX = g++
-# CXXFLAGS = 
 CXXFLAGS = -Iinclude -Wall -Wextra -Werror
-# CXXFLAGS = -Iinclude -Wall
+# CXXFLAGS = -Iinclude 
 
 # Diretórios de código-fonte e destino dos binários
 SRC_DIR = src

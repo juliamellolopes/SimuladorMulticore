@@ -6,8 +6,7 @@
  * É utilizada pela classe CPU para gerenciar os registradores durante a execução de instruções.
  */
 
-#ifndef CORE_H
-#define CORE_H
+#pragma once
 
 #include <vector>
 
@@ -22,8 +21,6 @@ public:
     }
 
     int _reg1, _reg2, _regDest;
-    vector<int> _registradores;                    // Vetor de núcleos (registradores).
+    vector<int> _registradores;
 private:
 };
-
-#endif

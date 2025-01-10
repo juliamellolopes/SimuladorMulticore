@@ -1,9 +1,14 @@
-#include "../include/pipeline.h"
+#include <iostream>
 
 using namespace std;
 
+#include "../include/cpu.h"
+
 int main() {
-    Pipeline pipeline;
+
+    CPU cpu;
+
+    cpu.inicializar();
 
     return 0;
 }

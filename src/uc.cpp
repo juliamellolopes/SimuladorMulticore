@@ -1,15 +1,40 @@
 #include "../include/uc.h"
 
 /**
- * @brief Inicializa a Unidade de Controle com memória principal e CPU.
+ * @brief Realiza uma operação aritmética ou condicional entre dois valores.
+ *
+ * @param var1 Primeiro valor.
+ * @param var2 Segundo valor.
+ * @param operador Operação a ser executada (+, -, *, /, <, >, =).
+ * @return Resultado da operação.
  */
-UC::UC() {
+int ULA::operation(int var1, int var2, char operador) {
+    cout << "[ULA] ";
 
-    MemoryRAM memory("instructions/");                 // Instancia MemoryRAM com o arquivo "instructions.txt" que contém as instruções para execução.
-    CPU cpu(memory);                                      // Cria um objeto CPU, passando a memória instanciada.
-
-    _memory = memory;
-    _cpu = cpu;
+    switch (operador) {
+    case '+': // ADD
+        return var1 + var2;
+    case '-': // SUB
+        return var1 - var2;
+    case '*': // MULT
+        return var1 * var2;
+    case '/': // DIV
+        if (var2 != 0) {
+            return var1 / var2;
+        } else {
+            cerr << "Erro: Divisão por zero!" << endl;
+            exit(EXIT_FAILURE);
+        }
+    case '<':
+        return var1 < var2;
+    case '>':
+        return var1 > var2;
+    case '=':
+        return var1 == var2;
+    default:
+        cerr << "Operacao invalida!" << endl;
+        exit(EXIT_FAILURE);
+    }
 }
 
 /**
@@ -17,9 +42,7 @@ UC::UC() {
  *
  * @param opcode Código da operação.
  */
-void UC::select(int opcode) {
-    int valor1 = _cpu.lerRegistrador(_cpu._cores[_cpu._coreAtivo]._reg1);
-    int valor2 = _cpu.lerRegistrador(_cpu._cores[_cpu._coreAtivo]._reg2);
+void UC::select(int opcode, int valor1, int valor2) {
     int res;
 
     switch (opcode) {
@@ -56,43 +79,5 @@ void UC::select(int opcode) {
         break;
     }
 
-    _cpu.escreverRegistrador(_cpu._cores[_cpu._coreAtivo]._regDest, res);
-}
-
-/**
- * @brief Realiza uma operação aritmética ou condicional entre dois valores.
- *
- * @param var1 Primeiro valor.
- * @param var2 Segundo valor.
- * @param operador Operação a ser executada (+, -, *, /, <, >, =).
- * @return Resultado da operação.
- */
-int ULA::operation(int var1, int var2, char operador) {
-
-    cout << "[ULA] ";
-
-    switch (operador) {
-    case '+': // ADD
-        return var1 + var2;
-    case '-': // SUB
-        return var1 - var2;
-    case '*': // MULT
-        return var1 * var2;
-    case '/': // DIV
-        if (var2 != 0) {
-            return var1 / var2;
-        } else {
-            cerr << "Erro: Divisão por zero!" << endl;
-            exit(EXIT_FAILURE);
-        }
-    case '<':
-        return var1 < var2;
-    case '>':
-        return var1 > var2;
-    case '=':
-        return var1 == var2;
-    default:
-        cerr << "Operacao invalida!" << endl;
-        exit(EXIT_FAILURE);
-    }
+    // escreverRegistrador(_cores[_coreAtivo]._regDest, res);
 }

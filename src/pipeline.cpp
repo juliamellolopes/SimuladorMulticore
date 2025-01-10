@@ -23,45 +23,50 @@ vector<string> Pipeline::tokenizar(string &instrucao) {
 }
 
 /**
- * @brief Inicializa o pipeline com referências para memória e CPU.
+ * @brief Lê o valor de um registrador específico do núcleo ativo.
  *
- * Configura valores iniciais e inicia o loop de execução.
+ * @param reg Índice do registrador a ser lido.
+ * @return Valor armazenado no registrador.
  */
-Pipeline::Pipeline() {
-    _instrucaoAtual.assign("");
-    _opcode.assign("");
 
-    _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = _uc._cpu._cores[_uc._cpu._coreAtivo]._reg2 = _uc._cpu._cores[_uc._cpu._coreAtivo]._regDest = 0;
+int Pipeline::lerRegistrador(int reg) {
+    if (reg > 0 && reg <= TAM_R) {
 
-    for (int i = 0; i < TAM_INSTRUCTIONS; i++) {
-        cout << "--- Inciando processo " << _uc._memory.instrucaoAtual + 1 << " ---" << endl << endl;
-        InstructionLoop();
-        cout << endl << "Instruções " << ++_uc._memory.instrucaoAtual << " finalizadas." << endl << endl;
+        return _cores[_coreAtivo]._registradores[reg - 1];
+
+    } else {
+        cerr << "Erro: Registrador invalido!" << endl;
+        return -1;
     }
-
 }
 
 /**
- * @brief Controla o ciclo de execução do pipeline, processando todas as instruções.
+ * @brief Escreve um valor em um registrador específico do núcleo ativo.
+ *
+ * @param reg Índice do registrador a ser escrito.
+ * @param valor Valor a ser armazenado no registrador.
  */
-void Pipeline::InstructionLoop() {
-    const int TAM_I = _uc._memory.getSize();      // tamanho de instruções 
-    vector<bool> control(TAM_I, false);           // variavel de controle da utilização da instrução (true - usado, false - não usado)
-    int cont = TAM_I;
+void Pipeline::escreverRegistrador(int reg, int valor) {
+    if (reg > 0 && reg <= TAM_R) {
 
-    while (cont > 1) {
+        _cores[_coreAtivo]._registradores[reg - 1] = valor;
+        cout << "      -> Valor " << valor << " foi escrito no Registrador R" << reg << " no Core " << _coreAtivo << endl << endl;
 
-        if (control[_uc._cpu.getPC()] == false) {
-            cont = TAM_I;
-            control[_uc._cpu.getPC()] = true;
-            InstructionFetch();
-
-        } else {
-            cont--;
-        }
+    } else {
+        cerr << "Erro: Registrador invalido!" << endl;
     }
-
 }
+
+/**
+ * @brief Escreve o valor de um registrador em um endereço específico na memória.
+ *
+ * @param endereco Endereço de memória onde o valor será escrito.
+ */
+void Pipeline::escreverNaMemoria(int endereco) {
+    int valor = lerRegistrador(_cores[_coreAtivo]._reg1);
+    _memoryCache.escrever(endereco, valor);
+}
+
 
 /**
  * @brief Realiza a busca da instrução atual na memória principal.
@@ -71,12 +76,7 @@ void Pipeline::InstructionLoop() {
 void Pipeline::InstructionFetch() {
     cout << "[IF ] ";
     cout << "Buscando instrucao...\n";
-    _instrucaoAtual.assign(_uc._memory.getInstrucao(_uc._cpu.getPC()));
-
-    // cout << endl;
-    InstructionDecode();
-
-    _uc._cpu.incrementaPC();
+    _instrucaoAtual.assign(_memoryRAM.getInstrucao(_PC));
 }
 
 /**
@@ -92,7 +92,7 @@ void Pipeline::InstructionFetch() {
  */
 int obterIndiceRegistrador(const string &reg) {
     if (reg[0] == 'R') {
-        return stoi(reg.substr(1));         // Converte o número após 'R' em um inteiro
+        return stoi(reg.substr(1));      
     }
     cerr << "Erro: Registrador inválido " << reg << endl;
     exit(EXIT_FAILURE);
@@ -101,7 +101,7 @@ int obterIndiceRegistrador(const string &reg) {
 /**
  * @brief Decodifica a instrução atual e identifica os registradores e o opcode.
  */
-void Pipeline::InstructionDecode() {
+string Pipeline::InstructionDecode() {
     cout << "[ID ] ";
 
     cout << "Decodificando: " << _instrucaoAtual << endl;
@@ -111,32 +111,34 @@ void Pipeline::InstructionDecode() {
 
     if (_opcode.compare("LOAD") == 0) {
 
-        _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
+        _cores[_coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
         auto valor = stoi(tokens[2]);
 
-        _uc._cpu.escreverRegistrador(_uc._cpu._cores[_uc._cpu._coreAtivo]._reg1, valor);
+        escreverRegistrador(_cores[_coreAtivo]._reg1, valor);
 
     } else if (_opcode.compare("STORE") == 0) {
         auto endereco = stoi(tokens[2]);
-        _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
+        _cores[_coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
 
-        _uc._cpu.escreverNaMemoria(endereco);
+        escreverNaMemoria(endereco);
 
     } else if (_opcode.compare("IF") == 0) {
 
-        _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
-        _uc._cpu._cores[_uc._cpu._coreAtivo]._reg2 = obterIndiceRegistrador(tokens[3]);
+        _cores[_coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
+        _cores[_coreAtivo]._reg2 = obterIndiceRegistrador(tokens[3]);
 
-        Execute(tokens[2]);
+        return tokens[2];
 
     } else {
 
-        _uc._cpu._cores[_uc._cpu._coreAtivo]._regDest = obterIndiceRegistrador(tokens[1]);
-        _uc._cpu._cores[_uc._cpu._coreAtivo]._reg1 = obterIndiceRegistrador(tokens[2]);
-        _uc._cpu._cores[_uc._cpu._coreAtivo]._reg2 = obterIndiceRegistrador(tokens[3]);
+        _cores[_coreAtivo]._regDest = obterIndiceRegistrador(tokens[1]);
+        _cores[_coreAtivo]._reg1 = obterIndiceRegistrador(tokens[2]);
+        _cores[_coreAtivo]._reg2 = obterIndiceRegistrador(tokens[3]);
 
-        Execute(_opcode);
+        return _opcode;
     }
+
+    return "";
 }
 
 /**
@@ -144,26 +146,31 @@ void Pipeline::InstructionDecode() {
  *
  * @param code Código da operação (opcode).
  */
-void Pipeline::Execute(string code) {
+vector<int> Pipeline::Execute(string code) {
     cout << "[EX ] ";
     cout << "Chamando operações CPU " << endl;
+    int valor0 = -1;
+    int valor1 = lerRegistrador(_cores[_coreAtivo]._reg1);
+    int valor2 = lerRegistrador(_cores[_coreAtivo]._reg2);
 
     if (code.compare("<") == 0) {
-        _uc.select(4);
+        valor0 = 4;
     } else if (code.compare(">") == 0) {
-        _uc.select(5);
+        valor0 = 5;
     } else if (code.compare("=") == 0) {
-        _uc.select(6);
+        valor0 = 6;
     } else if (code.compare("ADD") == 0) {
-        _uc.select(0);
+        valor0 = 0;
     } else if (code.compare("SUB") == 0) {
-        _uc.select(1);
+        valor0 = 1;
     } else if (code.compare("MULT") == 0) {
-        _uc.select(2);
+        valor0 = 2;
     } else if (code.compare("DIV") == 0) {
-        _uc.select(3);
+        valor0 = 3;
     } else {
         cerr << "Erro opcode nao encontrado." << endl;
         exit(EXIT_FAILURE);
     }
+
+    return{ valor0, valor1, valor2 };
 }

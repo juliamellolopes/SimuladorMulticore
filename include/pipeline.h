@@ -6,28 +6,41 @@
  * Unidade de Controle (UC), CPU, e memória. É a classe principal para simular o pipeline.
  */
 
-#ifndef PIPELINE_H
-#define PIPELINE_H
+#pragma once
 
-#include "memory.h"
-#include "cpu.h"
-#include "uc.h"
+#include "memory/cache.h"
+#include "core.h"
+ // #include "cpu.h"
+ // #include "uc.h"
 
-#define DBG(x) std::cerr << #x << " = " << (x) <<std::endl;
+#define TAM_C 2
 
 class Pipeline {
 public:
-    Pipeline();                                               // Construtor padrão.
-    void InstructionFetch();                                  // Busca a próxima instrução na memória.
-    void InstructionDecode();                                 // Decodifica a instrução buscada, identificando o opcode e registradores.
-    void Execute(string code);                                // Executa a instrução baseada no código passado.
-    vector<string>tokenizar(string &instrucao);               // Separa uma instrução em tokens, retornando um vetor de strings.
-    void InstructionLoop();                                              // Controla o ciclo de execução das instruções, monitorando a execução completa do conjunto de instruções.
+    Pipeline(MemoryRAM &memoryRAM, MemoryCache &memoryCache, vector<CORE> &cores, int &coreAtivo, int &PC) :
+        _memoryRAM(memoryRAM),
+        _memoryCache(memoryCache),
+        _cores(cores),
+        _coreAtivo(coreAtivo),
+        _PC(PC) {}
+
+    int lerRegistrador(int reg);
+    void escreverRegistrador(int reg, int valor);
+    void escreverNaMemoria(int endereco);
+
+    void InstructionFetch();
+    string InstructionDecode();
+    vector<int> Execute(string code);
 
 private:
-    string _instrucaoAtual;                                   // Armazena a instrução que está sendo processada.
-    string _opcode;                                           // Guarda o opcode da instrução atual.
-    UC _uc;
-};
+    string _instrucaoAtual;
+    string _opcode;
 
-#endif
+    MemoryRAM &_memoryRAM;
+    MemoryCache &_memoryCache;
+    vector<CORE> &_cores;
+    int &_coreAtivo;
+    int &_PC;
+
+    vector<string>tokenizar(string &instrucao);
+};
