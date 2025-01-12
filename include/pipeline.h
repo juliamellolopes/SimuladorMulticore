@@ -10,10 +10,6 @@
 
 #include "memory/cache.h"
 #include "core.h"
- // #include "cpu.h"
- // #include "uc.h"
-
-#define TAM_C 2
 
 class Pipeline {
 public:
@@ -28,7 +24,7 @@ public:
     void escreverRegistrador(int reg, int valor);
     void escreverNaMemoria(int endereco);
 
-    void InstructionFetch();
+    void InstructionFetch(string instrucao);
     string InstructionDecode();
     vector<int> Execute(string code);
 

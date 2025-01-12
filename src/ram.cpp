@@ -10,7 +10,16 @@
  */
 MemoryRAM::MemoryRAM(string path) {
 
-    _memoria = vector<MemoryCell>(TAM_CELL, monostate{});
+    // _memoria = vector<MemoryCell>(TAM_CELL, monostate{});
+    for (size_t i = 0; i < TAM_CELL; i++) {
+        ostringstream hexStream;
+        hexStream << hex << uppercase << i;
+
+        // Obtendo a string hexadecimal
+        string hexValue = hexStream.str();
+        _memoria[hexValue] = monostate{};
+    }
+
 
     string linha;
     vector<string> instrucoesAtual;
@@ -75,6 +84,9 @@ void MemoryRAM::incrementaInstrucao() {
     _instrucaoAtual++;
 }
 
+MemoryCell MemoryRAM::getProcesso(string endereco) {
+    return _memoria[endereco];
+}
 
 /**
  * @brief Armazena um valor em um endereço específico da memória principal (RAM).
@@ -87,31 +99,54 @@ void MemoryRAM::incrementaInstrucao() {
  * @param valor O valor a ser armazenado no endereço especificado.
  */
 void MemoryRAM::escrever(int endereco, int valor) {
-    _memoria[endereco] = valor;
+    // _memoria[endereco] = valor;
+    ostringstream hexStream;
+    hexStream << hex << uppercase << endereco;
+    string hexValue = hexStream.str();
+    _memoria[hexValue] = valor;
     cout << "      -> Valor " << valor << " foi armazenado no endereco " << endereco << endl;
 }
 
+void MemoryRAM::guardarProcesso(string endereco, Processo &processo) {
+    _memoria[endereco] = processo;
+}
+
+
 void MemoryRAM::mostrarTodosDados() {
-    for (size_t i = 0; i < _memoria.size(); ++i) {
-        cout << "Memory[" << i << "]: ";
-        visit([](auto &&value) {
-            if constexpr (std::is_same_v<decay_t<decltype(value)>, monostate>) {
-                // cout << "null";
-            } else {
-                std::cout << value;
-            }
-        }, _memoria[i]);
-        cout << endl;
+    // for (size_t i = 0; i < _memoria.size(); ++i) {
+    //     cout << "Memory[" << i << "]: ";
+        // visit([](auto &&value) {
+        //     if constexpr (is_same_v<decay_t<decltype(value)>, monostate>) {
+        //         cout << "null";
+        //     } else {
+        //         if constexpr (is_same_v<decay_t<decltype(value)>, int>) {
+        //             cout << value;
+        //         }
+        //     }
+        // }, _memoria[i]);
+        // cout << endl;
+    // }
+
+    for (auto &[k, v] : _memoria) {
+        cout << k << endl;
     }
+
 }
 
 void MemoryRAM::mostrarDados() {
     cout << endl;
-    for (size_t i = 0; i < _memoria.size(); ++i) {
-        visit([i](auto &&value) {
-            if constexpr (!std::is_same_v<std::decay_t<decltype(value)>, std::monostate>) {
-                std::cout << "Memory[" << i << "]: " << value << std::endl;
+    for (const auto &[key, value] : _memoria) {
+        visit([&key](auto &&cellValue) {
+            if constexpr (!is_same_v<decay_t<decltype(cellValue)>, monostate>) {
+                if constexpr (is_same_v<decay_t<decltype(cellValue)>, int>) {
+                    cout << "Memory[" << key << "]: " << cellValue << endl;
+                } else if constexpr (is_same_v<decay_t<decltype(cellValue)>, Processo>) {
+                    Processo processo = cellValue;
+                    cout << "Memory[" << key << "]: Processo ID: " << processo._pcb.getId() << endl;
+                } else {
+                    cout << "Memory[" << key << "]: Não é do tipo tratado" << endl;
+                }
             }
-        }, _memoria[i]);
+        }, value);
     }
 }

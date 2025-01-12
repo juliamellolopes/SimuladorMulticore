@@ -73,10 +73,11 @@ void Pipeline::escreverNaMemoria(int endereco) {
  *
  * Incrementa o contador de programa (PC) após a busca.
  */
-void Pipeline::InstructionFetch() {
+void Pipeline::InstructionFetch(string instrucao) {
     cout << "[IF ] ";
     cout << "Buscando instrucao...\n";
-    _instrucaoAtual.assign(_memoryRAM.getInstrucao(_PC));
+    // _instrucaoAtual.assign(_memoryRAM.getInstrucao(_PC));
+    _instrucaoAtual.assign(instrucao);
 }
 
 /**
