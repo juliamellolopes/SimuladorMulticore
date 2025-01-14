@@ -26,9 +26,9 @@ string PCB::getEnderecoBase() {
 
 void PCB::setId(int id) {
     _id = id;
-    if (_id == 1005) {
-        _prioridade = ALTA;
-    }
+    // if (_id == 1005) {
+    //     _prioridade = ALTA;
+    // }
 }
 
 int PCB::getId() {

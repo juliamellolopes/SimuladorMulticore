@@ -5,9 +5,11 @@ void CPU::init() {
     _coreAtivo = 0;
     _processosAtivos = 0;
     _cores = vector<CORE>(TAM_CORE);
-    _cores[_coreAtivo]._reg1 = 0;
-    _cores[_coreAtivo]._reg2 = 0;
-    _cores[_coreAtivo]._regDest = 0;
+    for (auto &core : _cores) {
+        core._reg1 = 0;
+        core._reg2 = 0;
+        core._regDest = 0;
+    }
 }
 
 void CPU::inicializar() {
@@ -32,7 +34,20 @@ void CPU::inicializar() {
         _memoryRAM.guardarProcesso(endereco, processo);
     }
 
+    // executarProcessos();
+    auto inicio = chrono::high_resolution_clock::now();
+    inicializarThreads();
+    _memoryCache.liberarCache();
+    _memoryRAM.mostrarDados();
 
+    auto fim = chrono::high_resolution_clock::now();
+    auto duracao = chrono::duration_cast<std::chrono::milliseconds>(fim - inicio);
+
+    cout << "Tempo de execução: " << duracao.count() << " ms" << endl;
+}
+
+
+void CPU::executarProcessos() {
     do {
         organizarFila();
         _processosAtivos = 0;
@@ -67,8 +82,79 @@ void CPU::inicializar() {
         }
     } while (_processosAtivos > 0);
 
-    _memoryCache.liberarCache();
-    _memoryRAM.mostrarDados();
+    // _memoryCache.liberarCache();
+    // _memoryRAM.mostrarDados();
+}
+
+void CPU::inicializarThreads() {
+
+    cout << "Inicializando Threads para " << TAM_CORE << " Cores" << endl;
+
+    for (int i = 0; i < TAM_CORE; ++i) {
+        _threads.emplace_back([this, i]() {
+            processarCore(i);
+        });
+    }
+
+    for (auto &t : _threads) {
+        if (t.joinable()) {
+            t.join();
+        }
+    }
+
+    cout << "Todas as Threads finalizaram o processamento." << endl;
+}
+
+void CPU::processarCore(int coreID) {
+    cout << "Core " << coreID << " iniciando processamento..." << endl;
+
+    do {
+        organizarFila();
+        _processosAtivos = 0;
+
+
+        while (true) {
+            this_thread::sleep_for(std::chrono::milliseconds(100));
+            string processoID;
+
+            {
+                lock_guard<mutex> lock(_mutexFilaPrincipal);
+                if (_processosID.empty()) {
+                    break;
+                }
+
+                processoID = _processosID.front();
+                _processosID.pop();
+            }
+
+            Processo processo;
+            bool isProcesso = false;
+
+            visit([&processo, &isProcesso](auto &&value) {
+                if constexpr (is_same_v<decay_t<decltype(value)>, Processo>) {
+                    processo = value;
+                    isProcesso = true;
+                } else {
+                    cout << "Não é um processo válido!" << endl;
+                }
+            }, _memoryRAM.getProcesso(processoID));
+
+            if (isProcesso) {
+                lock_guard<mutex> lock(_mutexFilaPrincipal);
+                cout << "[Core " << coreID << "] Processando ID: " << processoID << endl;
+
+                _coreAtivo = coreID;
+                processamento(processo);
+
+                if (processo.getCicloVida() != PRONTO) {
+                    gerenciarPrioridade(processo);
+                    // _processosID.push(processoID);
+                }
+            }
+        }
+    } while (_processosAtivos > 0);
+
+    cout << "[Core " << coreID << "] concluiu processamento." << endl;
 }
 
 void CPU::gerenciarPrioridade(Processo &processo) {

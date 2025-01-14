@@ -10,7 +10,7 @@
 
 #include "processo.h"
 
-#define TAM_INSTRUCTIONS 5
+#define TAM_INSTRUCTIONS 20
 #define TAM_CELL 100
 
 using namespace std;
@@ -20,7 +20,7 @@ using MemoryCell = variant<monostate, int, Processo>;
 class MemoryRAM {
 private:
     // vector<MemoryCell> _memoria;
-    map<string,MemoryCell> _memoria;
+    map<string, MemoryCell> _memoria;
     size_t _instrucaoAtual;
 
 public:

@@ -65,6 +65,8 @@
     "xutility": "cpp",
     "iomanip": "cpp",
     "map": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "thread": "cpp",
+    "mutex": "cpp"
   }
 }
