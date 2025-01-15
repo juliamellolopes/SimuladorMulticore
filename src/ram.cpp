@@ -8,7 +8,8 @@
  *
  * @param path Caminho do arquivo de texto contendo as instruções a serem carregadas na memória.
  */
-MemoryRAM::MemoryRAM(string path) {
+MemoryRAM::MemoryRAM(string path, bool tipo) {
+    _tipoExibicao = tipo;
 
     // _memoria = vector<MemoryCell>(TAM_CELL, monostate{});
     for (size_t i = 0; i < TAM_CELL; i++) {
@@ -38,7 +39,9 @@ MemoryRAM::MemoryRAM(string path) {
             exit(EXIT_FAILURE);
         }
 
-        cout << "Instrucoes " << i + 1 << " carregadas!" << endl;
+        if (_tipoExibicao) {
+            cout << "Instrucoes " << i + 1 << " carregadas!" << endl;
+        }
 
         _instrucoes.push_back(instrucoesAtual);
         instrucoesAtual.clear();
@@ -104,7 +107,10 @@ void MemoryRAM::escrever(int endereco, int valor) {
     hexStream << hex << uppercase << endereco;
     string hexValue = hexStream.str();
     _memoria[hexValue] = valor;
-    cout << "      -> Valor " << valor << " foi armazenado no endereco " << endereco << endl;
+    
+    if (_tipoExibicao) {
+        cout << "      -> Valor " << valor << " foi armazenado no endereco " << endereco << endl;
+    }
 }
 
 void MemoryRAM::guardarProcesso(string endereco, Processo &processo) {

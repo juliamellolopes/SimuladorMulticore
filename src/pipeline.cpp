@@ -50,9 +50,12 @@ void Pipeline::escreverRegistrador(int reg, int valor) {
     if (reg > 0 && reg <= TAM_R) {
 
         _cores[_coreAtivo]._registradores[reg - 1] = valor;
-        cout << "      -> Valor " << valor << " foi escrito no Registrador R" << reg << " no Core " << _coreAtivo << endl << endl;
+        if (_tipoExibicao) {
+            cout << "      -> Valor " << valor << " foi escrito no Registrador R" << reg << " no Core " << _coreAtivo << endl << endl;
+        }
 
     } else {
+        cout << reg << " " << valor << endl;
         cerr << "Erro: Registrador invalido!" << endl;
     }
 }
@@ -74,9 +77,10 @@ void Pipeline::escreverNaMemoria(int endereco) {
  * Incrementa o contador de programa (PC) após a busca.
  */
 void Pipeline::InstructionFetch(string instrucao) {
-    cout << "[IF ] ";
-    cout << "Buscando instrucao...\n";
-    // _instrucaoAtual.assign(_memoryRAM.getInstrucao(_PC));
+    if (_tipoExibicao) {
+        cout << "[IF ] ";
+        cout << "Buscando instrucao...\n";
+    }
     _instrucaoAtual.assign(instrucao);
 }
 
@@ -93,7 +97,7 @@ void Pipeline::InstructionFetch(string instrucao) {
  */
 int obterIndiceRegistrador(const string &reg) {
     if (reg[0] == 'R') {
-        return stoi(reg.substr(1));      
+        return stoi(reg.substr(1));
     }
     cerr << "Erro: Registrador inválido " << reg << endl;
     exit(EXIT_FAILURE);
@@ -103,9 +107,10 @@ int obterIndiceRegistrador(const string &reg) {
  * @brief Decodifica a instrução atual e identifica os registradores e o opcode.
  */
 string Pipeline::InstructionDecode() {
-    cout << "[ID ] ";
-
-    cout << "Decodificando: " << _instrucaoAtual << endl;
+    if (_tipoExibicao) {
+        cout << "[ID ] ";
+        cout << "Decodificando: " << _instrucaoAtual << endl;
+    }
 
     auto tokens = tokenizar(_instrucaoAtual);
     _opcode = tokens[0];
@@ -124,11 +129,11 @@ string Pipeline::InstructionDecode() {
         escreverNaMemoria(endereco);
 
     } else if (_opcode.compare("IF") == 0) {
+        _cores[_coreAtivo]._regDest = obterIndiceRegistrador(tokens[1]);
+        _cores[_coreAtivo]._reg1 = obterIndiceRegistrador(tokens[2]);
+        _cores[_coreAtivo]._reg2 = obterIndiceRegistrador(tokens[4]);
 
-        _cores[_coreAtivo]._reg1 = obterIndiceRegistrador(tokens[1]);
-        _cores[_coreAtivo]._reg2 = obterIndiceRegistrador(tokens[3]);
-
-        return tokens[2];
+        return tokens[3];
 
     } else {
 
@@ -148,8 +153,10 @@ string Pipeline::InstructionDecode() {
  * @param code Código da operação (opcode).
  */
 vector<int> Pipeline::Execute(string code) {
-    cout << "[EX ] ";
-    cout << "Chamando operações CPU " << endl;
+    if (_tipoExibicao) {
+        cout << "[EX ] ";
+        cout << "Chamando operações CPU " << endl;
+    }
     int valor0 = -1;
     int valor1 = lerRegistrador(_cores[_coreAtivo]._reg1);
     int valor2 = lerRegistrador(_cores[_coreAtivo]._reg2);

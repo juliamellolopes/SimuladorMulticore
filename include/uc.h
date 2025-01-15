@@ -9,7 +9,7 @@ using namespace std;
 class ULA {
 public:
     ULA() {}
-    int operation(int var1, int var2, char var3);
+    int operation(int var1, int var2, char var3, const bool tipo);
 private:
 };
 
@@ -21,5 +21,5 @@ public:
     UC() {}
     ~UC() {}
 
-    int select(int opcode, int valor1, int valor2);
+    int select(int opcode, int valor1, int valor2, const bool tipo);
 };

@@ -15,6 +15,7 @@ using namespace std;
 #define TAM_R 8   // Número de registradores
 
 class CORE {
+private:
 public:
     CORE() {
         _registradores = vector(TAM_R, 0);
@@ -22,5 +23,4 @@ public:
 
     int _reg1, _reg2, _regDest;
     vector<int> _registradores;
-private:
 };

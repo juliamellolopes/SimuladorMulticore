@@ -11,10 +11,12 @@
 #include "memory/cache.h"
 #include "processo.h"
 
-#define TAM_CORE 5
+#define TAM_CORE 3
 #define QUANTUM_CPU 20
 class CPU : UC {
 private:
+    bool _tipoExibicao; // true -> completa | false -> resumida
+
     MemoryRAM _memoryRAM;
     MemoryCache _memoryCache;
     Pipeline _pipeline;
@@ -33,10 +35,11 @@ private:
     vector<thread> _threads;
     mutex _mutexFilaPrincipal;
 public:
-    CPU() :
-        _memoryRAM("instructions/"),
-        _memoryCache(_memoryRAM),
-        _pipeline(_memoryRAM, _memoryCache, _cores, _coreAtivo, _PC),
+    CPU(const bool tipo) :
+        _tipoExibicao(tipo),
+        _memoryRAM("instructions/", _tipoExibicao),
+        _memoryCache(_memoryRAM, _tipoExibicao),
+        _pipeline(_memoryRAM, _memoryCache, _cores, _coreAtivo, _PC, _tipoExibicao),
         _escalonador(_processosID) {
         init();
     }
@@ -54,4 +57,7 @@ public:
 
     void setPolitica(TipoPolitica politica);
     TipoPolitica getPolitica();
+
+    void setTipoExibicao(bool tipo);
+    bool getTipoExibicao();
 };

@@ -14,7 +14,11 @@ void CPU::init() {
 
 void CPU::inicializar() {
 
-    cout << "Iniciando Simulacao com " << TAM_CORE << " Cores e " << TAM_R << " Registradores cada" << endl << endl;
+    if (getTipoExibicao()) {
+        cout << "Iniciando Simulacao com " << TAM_CORE << " Cores e " << TAM_R << " Registradores cada" << endl << endl;
+    } else {
+        cout << " PID | CORE | TIME | Instruction " << endl << endl;
+    }
 
     int posicaoInicial = 12;
     int idInicial = 1001;
@@ -37,17 +41,21 @@ void CPU::inicializar() {
     auto inicio = chrono::high_resolution_clock::now();
     inicializarThreads();
     _memoryCache.liberarCache();
-    _memoryRAM.mostrarDados();
+    if (getTipoExibicao()) {
+        _memoryRAM.mostrarDados();
+    }
 
     auto fim = chrono::high_resolution_clock::now();
     auto duracao = chrono::duration_cast<std::chrono::milliseconds>(fim - inicio);
 
-    cout << "Tempo de execução: " << duracao.count() << " ms" << endl;
+    cout << "\nTempo de execução: " << duracao.count() << " ms" << endl;
 }
 
 void CPU::inicializarThreads() {
 
-    cout << "Inicializando Threads para " << TAM_CORE << " Cores" << endl;
+    if (getTipoExibicao()) {
+        cout << "Inicializando Threads para " << TAM_CORE << " Cores" << endl;
+    }
 
     for (int i = 0; i < TAM_CORE; ++i) {
         _threads.emplace_back([this, i]() {
@@ -61,11 +69,15 @@ void CPU::inicializarThreads() {
         }
     }
 
-    cout << "Todas as Threads finalizaram o processamento." << endl;
+    if (getTipoExibicao()) {
+        cout << "Todas as Threads finalizaram o processamento." << endl;
+    }
 }
 
 void CPU::processarCore(int coreID) {
-    cout << "[Core " << coreID << "] iniciando processamento..." << endl;
+    if (getTipoExibicao()) {
+        cout << "[Core " << coreID << "] iniciando processamento..." << endl;
+    }
 
     do {
         if (getPolitica() == PRIORIDADE) {
@@ -101,7 +113,9 @@ void CPU::processarCore(int coreID) {
 
             if (isProcesso) {
                 lock_guard<mutex> lock(_mutexFilaPrincipal);
-                cout << "[Core " << coreID << "] Processando ID: " << processoID << endl;
+                if (getTipoExibicao()) {
+                    cout << "[Core " << coreID << "] Processando ID: " << processoID << endl;
+                }
 
                 _coreAtivo = coreID;
                 processamento(processo);
@@ -113,7 +127,9 @@ void CPU::processarCore(int coreID) {
         }
     } while (_processosAtivos > 0);
 
-    cout << "[Core " << coreID << "] concluiu processamento." << endl;
+    if (getTipoExibicao()) {
+        cout << "[Core " << coreID << "] concluiu processamento." << endl;
+    }
 }
 
 void CPU::processamento(Processo &processo) {
@@ -126,12 +142,17 @@ void CPU::processamento(Processo &processo) {
 
         while (true) {
             if (getPolitica() != FCFS) {
-                if (contQuantum > QUANTUM_CPU) {
+                if (contQuantum >= QUANTUM_CPU) {
                     break;
                 }
                 contQuantum += processo._pcb.getQuantum();
             }
-            cout << "[Processo ID]: " << processo._pcb.getId() << endl;
+            if (getTipoExibicao()) {
+                cout << "[Processo ID]: " << processo._pcb.getId() << endl;
+            } else {
+                auto tempoAtual = processo._pcb.getTempoAtual();
+                cout << processo._pcb.getId() << " | " << _coreAtivo << " | " << tempoAtual << "  | " << processo._pcb.getInstrucao() << endl;
+            }
 
             executePipeline(processo._pcb.getInstrucao());
             processo._pcb.incrementeEstado();
@@ -155,7 +176,7 @@ void CPU::executePipeline(const string &instrucao) {
 
     if (code.size() != 0) {
         auto valores = _pipeline.Execute(code);
-        auto res = select(valores[0], valores[1], valores[2]);
+        auto res = select(valores[0], valores[1], valores[2], getTipoExibicao());
         _pipeline.escreverRegistrador(_cores[_coreAtivo]._regDest, res);
     }
 }
@@ -181,4 +202,13 @@ void CPU::setPolitica(TipoPolitica politica) {
 
 TipoPolitica CPU::getPolitica() {
     return _politica;
+}
+
+
+void CPU::setTipoExibicao(bool tipo) {
+    _tipoExibicao = tipo;
+}
+
+bool CPU::getTipoExibicao() {
+    return _tipoExibicao;
 }

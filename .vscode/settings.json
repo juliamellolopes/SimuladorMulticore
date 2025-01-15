@@ -71,6 +71,7 @@
     "forward_list": "cpp",
     "chrono": "cpp",
     "ratio": "cpp",
-    "stop_token": "cpp"
+    "stop_token": "cpp",
+    "random": "cpp"
   }
 }

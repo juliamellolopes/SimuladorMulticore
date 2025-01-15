@@ -37,6 +37,8 @@ public:
     int getId();
     int getQuantum();
     int getSizeIntrucoes();
+    int getTempoAtual();
+    int getTempoTotal();
     bool checkEstadoFinalizado();
     TipoPrioridade getPrioridade();
     queue<pair<int, int>> getRegistradores();

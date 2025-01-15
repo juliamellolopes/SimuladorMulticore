@@ -12,22 +12,6 @@
 #include "core.h"
 
 class Pipeline {
-public:
-    Pipeline(MemoryRAM &memoryRAM, MemoryCache &memoryCache, vector<CORE> &cores, int &coreAtivo, int &PC) :
-        _memoryRAM(memoryRAM),
-        _memoryCache(memoryCache),
-        _cores(cores),
-        _coreAtivo(coreAtivo),
-        _PC(PC) {}
-
-    int lerRegistrador(int reg);
-    void escreverRegistrador(int reg, int valor);
-    void escreverNaMemoria(int endereco);
-
-    void InstructionFetch(string instrucao);
-    string InstructionDecode();
-    vector<int> Execute(string code);
-
 private:
     string _instrucaoAtual;
     string _opcode;
@@ -37,6 +21,23 @@ private:
     vector<CORE> &_cores;
     int &_coreAtivo;
     int &_PC;
+    bool _tipoExibicao;
 
     vector<string>tokenizar(string &instrucao);
+public:
+    Pipeline(MemoryRAM &memoryRAM, MemoryCache &memoryCache, vector<CORE> &cores, int &coreAtivo, int &PC, bool tipo) :
+        _memoryRAM(memoryRAM),
+        _memoryCache(memoryCache),
+        _cores(cores),
+        _coreAtivo(coreAtivo),
+        _PC(PC),
+        _tipoExibicao(tipo) {}
+
+    int lerRegistrador(int reg);
+    void escreverRegistrador(int reg, int valor);
+    void escreverNaMemoria(int endereco);
+
+    void InstructionFetch(string instrucao);
+    string InstructionDecode();
+    vector<int> Execute(string code);
 };

@@ -7,11 +7,15 @@
  * @param valor Valor a ser armazenado.
  */
 void MemoryCache::escrever(int endereco, int valor) {
-    cout << "      -> Guadando informação na Cache..." << endl;
+    if (_tipoExibicao) {
+        cout << "      -> Guadando informação na Cache..." << endl;
+    }
     _cache.push(make_pair(endereco, valor));
 
     if (_cache.size() >= TAM_CACHE) {
-        cout << "      -> [Cache cheia]... Guardando o primeiro valor na memoria RAM" << endl;
+        if (_tipoExibicao) {
+            cout << "      -> [Cache cheia]... Guardando o primeiro valor na memoria RAM" << endl;
+        }
         memoriaCheia();
     }
 }

@@ -63,3 +63,12 @@ TipoPrioridade PCB::gerarPrioridadeAleatoria() {
 
     return static_cast<TipoPrioridade>(distrib(gen));
 }
+
+
+int PCB::getTempoAtual() {
+    return (_estadoAtual + 1) * QUANTUM_P - getTempoTotal();
+}
+
+int PCB::getTempoTotal() {
+    return getSizeIntrucoes() * QUANTUM_P;
+}

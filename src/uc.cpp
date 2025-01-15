@@ -8,8 +8,10 @@
  * @param operador Operação a ser executada (+, -, *, /, <, >, =).
  * @return Resultado da operação.
  */
-int ULA::operation(int var1, int var2, char operador) {
-    cout << "[ULA] ";
+int ULA::operation(int var1, int var2, char operador, const bool tipo) {
+    if (tipo) {
+        cout << "[ULA] ";
+    }
 
     switch (operador) {
     case '+': // ADD
@@ -42,37 +44,51 @@ int ULA::operation(int var1, int var2, char operador) {
  *
  * @param opcode Código da operação.
  */
-int UC::select(int opcode, int valor1, int valor2) {
+int UC::select(int opcode, int valor1, int valor2, const bool tipo) {
     int res;
 
     switch (opcode) {
     case 0:
-        res = _ula.operation(valor1, valor2, '+');
-        cout << "Executando operacao ADD: " << valor1 << " + " << valor2 << " = " << res << endl;
+        res = _ula.operation(valor1, valor2, '+', tipo);
+        if (tipo) {
+            cout << "Executando operacao ADD: " << valor1 << " + " << valor2 << " = " << res << endl;
+        }
         break;
     case 1:
-        res = _ula.operation(valor1, valor2, '-');
-        cout << "Executando operacao SUB: " << valor1 << " - " << valor2 << " = " << res << endl;
+        res = _ula.operation(valor1, valor2, '-', tipo);
+        if (tipo) {
+            cout << "Executando operacao SUB: " << valor1 << " - " << valor2 << " = " << res << endl;
+        }
         break;
     case 2:
-        res = _ula.operation(valor1, valor2, '*');
-        cout << "Executando operacao MULT: " << valor1 << " * " << valor2 << " = " << res << endl;
+        res = _ula.operation(valor1, valor2, '*', tipo);
+        if (tipo) {
+            cout << "Executando operacao MULT: " << valor1 << " * " << valor2 << " = " << res << endl;
+        }
         break;
     case 3:
-        res = _ula.operation(valor1, valor2, '/');
-        cout << "Executando operacao DIV: " << valor1 << " / " << valor2 << " = " << res << endl;
+        res = _ula.operation(valor1, valor2, '/', tipo);
+        if (tipo) {
+            cout << "Executando operacao DIV: " << valor1 << " / " << valor2 << " = " << res << endl;
+        }
         break;
     case 4:
-        res = _ula.operation(valor1, valor2, '<');
-        cout << "Executando operacao IF: " << valor1 << " < " << valor2 << " = " << ((res) ? "Verdade" : "Falso") << endl;
+        res = _ula.operation(valor1, valor2, '<', tipo);
+        if (tipo) {
+            cout << "Executando operacao IF: " << valor1 << " < " << valor2 << " = " << ((res) ? "Verdade" : "Falso") << endl;
+        }
         break;
     case 5:
-        res = _ula.operation(valor1, valor2, '>');
-        cout << "Executando operacao IF: " << valor1 << " > " << valor2 << " = " << ((res) ? "Verdade" : "Falso") << endl;
+        res = _ula.operation(valor1, valor2, '>', tipo);
+        if (tipo) {
+            cout << "Executando operacao IF: " << valor1 << " > " << valor2 << " = " << ((res) ? "Verdade" : "Falso") << endl;
+        }
         break;
     case 6:
-        res = _ula.operation(valor1, valor2, '=');
-        cout << "Executando operacao IF: " << valor1 << " == " << valor2 << " = " << ((res) ? "Verdade" : "Falso") << endl;
+        res = _ula.operation(valor1, valor2, '=', tipo);
+        if (tipo) {
+            cout << "Executando operacao IF: " << valor1 << " == " << valor2 << " = " << ((res) ? "Verdade" : "Falso") << endl;
+        }
         break;
     default:
         res = 0;
