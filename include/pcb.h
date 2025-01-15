@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <random>
 
 using namespace std;
 
@@ -13,7 +14,6 @@ enum TipoPrioridade {
     MEDIA,
     ALTA
 };
-
 class PCB {
 private:
     int _quantum;
@@ -29,7 +29,7 @@ public:
     PCB() :
         _quantum(QUANTUM_P),
         _estadoAtual(0),
-        _prioridade(BAIXA) {}
+        _prioridade(gerarPrioridadeAleatoria()) {}
     ~PCB() {}
 
     string getInstrucao();
@@ -46,4 +46,5 @@ public:
     void setEnderecoBase(string endereco);
     void setInstrucoes(vector<string> caminho);
     void inserirRegistrador(int index, int value);
+    TipoPrioridade gerarPrioridadeAleatoria();
 };

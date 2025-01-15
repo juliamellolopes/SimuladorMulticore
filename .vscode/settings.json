@@ -67,6 +67,10 @@
     "map": "cpp",
     "xtree": "cpp",
     "thread": "cpp",
-    "mutex": "cpp"
+    "mutex": "cpp",
+    "forward_list": "cpp",
+    "chrono": "cpp",
+    "ratio": "cpp",
+    "stop_token": "cpp"
   }
 }

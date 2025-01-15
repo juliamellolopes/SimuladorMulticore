@@ -34,7 +34,6 @@ void CPU::inicializar() {
         _memoryRAM.guardarProcesso(endereco, processo);
     }
 
-    // executarProcessos();
     auto inicio = chrono::high_resolution_clock::now();
     inicializarThreads();
     _memoryCache.liberarCache();
@@ -44,46 +43,6 @@ void CPU::inicializar() {
     auto duracao = chrono::duration_cast<std::chrono::milliseconds>(fim - inicio);
 
     cout << "Tempo de execução: " << duracao.count() << " ms" << endl;
-}
-
-
-void CPU::executarProcessos() {
-    do {
-        organizarFila();
-        _processosAtivos = 0;
-
-        while (!_processosID.empty()) {
-            auto processoID = _processosID.front();
-
-            Processo processo;
-            bool isProcesso = false;
-
-            visit([&processo, &isProcesso](auto &&value) {
-                if constexpr (is_same_v<decay_t<decltype(value)>, Processo>) {
-                    processo = value;
-                    isProcesso = true;
-                } else {
-                    cout << "Não é um processo!" << endl;
-                }
-            }, _memoryRAM.getProcesso(processoID));
-
-            if (isProcesso) {
-                processamento(processo);
-            } else {
-                cout << "Erro: ID inválido ou não é um processo válido." << endl;
-            }
-
-            _processosID.pop();
-            if (processo.getCicloVida() != PRONTO) {
-                gerenciarPrioridade(processo);
-            }
-
-            cout << endl;
-        }
-    } while (_processosAtivos > 0);
-
-    // _memoryCache.liberarCache();
-    // _memoryRAM.mostrarDados();
 }
 
 void CPU::inicializarThreads() {
@@ -106,12 +65,13 @@ void CPU::inicializarThreads() {
 }
 
 void CPU::processarCore(int coreID) {
-    cout << "Core " << coreID << " iniciando processamento..." << endl;
+    cout << "[Core " << coreID << "] iniciando processamento..." << endl;
 
     do {
-        organizarFila();
-        _processosAtivos = 0;
-
+        if (getPolitica() == PRIORIDADE) {
+            _escalonador._prioridade.organizarFila();
+            _processosAtivos = 0;
+        }
 
         while (true) {
             this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -147,40 +107,13 @@ void CPU::processarCore(int coreID) {
                 processamento(processo);
 
                 if (processo.getCicloVida() != PRONTO) {
-                    gerenciarPrioridade(processo);
-                    // _processosID.push(processoID);
+                    _escalonador.selecao(getPolitica(), processo, _processosAtivos);
                 }
             }
         }
     } while (_processosAtivos > 0);
 
     cout << "[Core " << coreID << "] concluiu processamento." << endl;
-}
-
-void CPU::gerenciarPrioridade(Processo &processo) {
-    if (processo._pcb.getPrioridade() == BAIXA) {
-        _filaAuxiliarBaixa.push(processo._pcb.getEnderecoBase());
-    } else if (processo._pcb.getPrioridade() == ALTA) {
-        _filaAuxiliarAlta.push(processo._pcb.getEnderecoBase());
-    } else {
-        _filaAuxiliarMedia.push(processo._pcb.getEnderecoBase());
-    }
-
-    _processosAtivos++;
-}
-
-void CPU::organizarFila() {
-    atualizarFila(_filaAuxiliarAlta);
-    atualizarFila(_filaAuxiliarMedia);
-    atualizarFila(_filaAuxiliarBaixa);
-}
-
-void CPU::atualizarFila(queue<string> &fila) {
-    while (!fila.empty()) {
-        auto endereco = fila.front();
-        _processosID.push(endereco);
-        fila.pop();
-    }
 }
 
 void CPU::processamento(Processo &processo) {
@@ -191,8 +124,13 @@ void CPU::processamento(Processo &processo) {
         atualizarRegistradores(reg);
         processo.setCicloVida(EXECUTANDO);
 
-        while (contQuantum < QUANTUM_CPU) {
-            contQuantum += processo._pcb.getQuantum();
+        while (true) {
+            if (getPolitica() != FCFS) {
+                if (contQuantum > QUANTUM_CPU) {
+                    break;
+                }
+                contQuantum += processo._pcb.getQuantum();
+            }
             cout << "[Processo ID]: " << processo._pcb.getId() << endl;
 
             executePipeline(processo._pcb.getInstrucao());
@@ -204,11 +142,11 @@ void CPU::processamento(Processo &processo) {
                 return;
             }
         }
+
         processo.setCicloVida(BLOQUEADO);
         processo.dowloadRegistrador(_cores[_coreAtivo]._registradores);
         _memoryRAM.guardarProcesso(processo._pcb.getEnderecoBase(), processo);
     }
-
 }
 
 void CPU::executePipeline(const string &instrucao) {
@@ -235,4 +173,12 @@ void CPU::atualizarRegistradores(queue<pair<int, int>> &registradores) {
  */
 void CPU::incrementaPC() {
     _PC++;
+}
+
+void CPU::setPolitica(TipoPolitica politica) {
+    _politica = politica;
+}
+
+TipoPolitica CPU::getPolitica() {
+    return _politica;
 }

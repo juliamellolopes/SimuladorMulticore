@@ -26,9 +26,6 @@ string PCB::getEnderecoBase() {
 
 void PCB::setId(int id) {
     _id = id;
-    // if (_id == 1005) {
-    //     _prioridade = ALTA;
-    // }
 }
 
 int PCB::getId() {
@@ -57,4 +54,12 @@ queue<pair<int, int>> PCB::getRegistradores() {
 
 TipoPrioridade PCB::getPrioridade() {
     return _prioridade;
+}
+
+TipoPrioridade PCB::gerarPrioridadeAleatoria() {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> distrib(BAIXA, ALTA);
+
+    return static_cast<TipoPrioridade>(distrib(gen));
 }
