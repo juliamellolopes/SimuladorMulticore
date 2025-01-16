@@ -1,4 +1,4 @@
-# Simulador da Arquitetura de Von Neumann e Pipeline MIPS
+# Simulador da Arquitetura Multicore com Escalonamento e Gerência de Memória
 
 Este projeto implementa um simulador avançado da arquitetura de Von Neumann com suporte ao pipeline MIPS em C++. O objetivo é permitir a visualização prática do funcionamento de componentes como a CPU, a memória principal, a memória cache e o pipeline, além de demonstrar o impacto das políticas de escalonamento de processos e da execução de instruções em paralelo.
 
