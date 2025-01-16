@@ -107,6 +107,19 @@ STORE R3 15
 IF R1 > R2
 MULT R4 R1 R2
 ```
+### Comandos Suportados
+
+Abaixo segue os comandos que o simulador suporta atualmente caso queira alterar o `instructions.txt`:
+
+| **Instrução** | **Descrição**                          | **Exemplo**     |
+| ------------- | -------------------------------------- | --------------- |
+| `LOAD`        | Carrega valor na memória para registro | `LOAD R1 10`    |
+| `STORE`       | Armazena registro na memória           | `STORE R3 15`   |
+| `ADD`         | Soma valores                           | `ADD R3 R1 R2`  |
+| `SUB`         | Subtrai valores                        | `SUB R3 R1 R2`  |
+| `MULT`        | Multiplica valores                     | `MULT R4 R1 R2` |
+| `DIV`         | Divide valores                         | `DIV R5 R1 R2`  |
+| `IF`          | Compara valores                        | `IF R1 > R2`    |
 
 ## Políticas de Escalonamento
 
