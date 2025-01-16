@@ -145,7 +145,7 @@ O simulador suporta as seguintes políticas de escalonamento:
 
 ## Artigo do Projeto
 
-Link direcionado para visualização do artigo: https://www.overleaf.com/read/ngyvjkwpmfyq#4508cc
+Link direcionado para visualização do artigo: https://www.overleaf.com/read/jhybhhndkzvk#b268d3
 
 ## Autor
 
