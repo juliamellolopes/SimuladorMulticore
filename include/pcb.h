@@ -1,3 +1,11 @@
+/**
+ * @file pcb.h
+ * @brief Declaração da classe PCB (Process Control Block), que armazena informações sobre processos.
+ *
+ * A classe PCB contém informações como ID, instruções, estado, registradores, e prioridade do processo.
+ * É utilizada pela CPU e escalonadores para gerenciar a execução de processos.
+ */
+
 #pragma once
 
 #include <iostream>

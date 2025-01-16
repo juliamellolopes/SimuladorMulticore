@@ -11,12 +11,10 @@
 MemoryRAM::MemoryRAM(string path, bool tipo) {
     _tipoExibicao = tipo;
 
-    // _memoria = vector<MemoryCell>(TAM_CELL, monostate{});
     for (size_t i = 0; i < TAM_CELL; i++) {
         ostringstream hexStream;
         hexStream << hex << uppercase << i;
 
-        // Obtendo a string hexadecimal
         string hexValue = hexStream.str();
         _memoria[hexValue] = monostate{};
     }
@@ -79,14 +77,28 @@ size_t MemoryRAM::getSize() {
     return _instrucoes[_instrucaoAtual].size();
 }
 
+/**
+ * @brief Retorna o índice da instrução atual.
+ *
+ * @return O índice da instrução atual.
+ */
 size_t MemoryRAM::getInstrucaoAtual() {
     return _instrucaoAtual + 1;
 }
 
+/**
+ * @brief Incrementa o índice da instrução atual em execução.
+ */
 void MemoryRAM::incrementaInstrucao() {
     _instrucaoAtual++;
 }
 
+/**
+ * @brief Recupera o processo armazenado em um endereço específico da memória.
+ *
+ * @param endereco O endereço de memória onde o processo está armazenado.
+ * @return O processo armazenado no endereço especificado.
+ */
 MemoryCell MemoryRAM::getProcesso(string endereco) {
     return _memoria[endereco];
 }
@@ -102,22 +114,32 @@ MemoryCell MemoryRAM::getProcesso(string endereco) {
  * @param valor O valor a ser armazenado no endereço especificado.
  */
 void MemoryRAM::escrever(int endereco, int valor) {
-    // _memoria[endereco] = valor;
     ostringstream hexStream;
     hexStream << hex << uppercase << endereco;
     string hexValue = hexStream.str();
     _memoria[hexValue] = valor;
-    
+
     if (_tipoExibicao) {
         cout << "      -> Valor " << valor << " foi armazenado no endereco " << endereco << endl;
     }
 }
 
+/**
+ * @brief Armazena um processo em um endereço específico da memória principal.
+ *
+ * @param endereco O endereço de memória onde o processo será armazenado.
+ * @param processo O processo a ser armazenado.
+ */
 void MemoryRAM::guardarProcesso(string endereco, Processo &processo) {
     _memoria[endereco] = processo;
 }
 
 
+/**
+ * @brief Exibe todos os endereços de memória atualmente utilizados.
+ *
+ * Esta função imprime uma lista de endereços de memória onde há dados armazenados.
+ */
 void MemoryRAM::mostrarTodosDados() {
     // for (size_t i = 0; i < _memoria.size(); ++i) {
     //     cout << "Memory[" << i << "]: ";
@@ -139,6 +161,12 @@ void MemoryRAM::mostrarTodosDados() {
 
 }
 
+/**
+ * @brief Exibe os dados armazenados na memória principal.
+ *
+ * Para cada endereço de memória, exibe o conteúdo armazenado, seja um inteiro,
+ * um processo ou outro tipo de dado tratado.
+ */
 void MemoryRAM::mostrarDados() {
     cout << endl;
     for (const auto &[key, value] : _memoria) {

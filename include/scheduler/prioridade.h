@@ -1,3 +1,11 @@
+/**
+ * @file prioridade.h
+ * @brief Declaração da classe Prioridade, que implementa o algoritmo de escalonamento baseado em prioridades.
+ *
+ * O algoritmo de Prioridade organiza processos em filas de alta, média e baixa prioridade, garantindo
+ * que processos críticos sejam executados antes dos demais.
+ */
+
 #pragma once
 
 #include "processo.h"

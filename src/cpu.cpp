@@ -1,5 +1,8 @@
 #include "../include/cpu.h"
 
+/**
+ * @brief Inicializa os atributos principais da CPU, como os núcleos e o contador de programa.
+ */
 void CPU::init() {
     _PC = 0;
     _coreAtivo = 0;
@@ -12,6 +15,9 @@ void CPU::init() {
     }
 }
 
+/**
+ * @brief Inicializa a simulação, carregando processos na memória e configurando as threads.
+ */
 void CPU::inicializar() {
 
     if (getTipoExibicao()) {
@@ -51,6 +57,9 @@ void CPU::inicializar() {
     cout << "\nTempo de execução: " << duracao.count() << " ms" << endl;
 }
 
+/**
+ * @brief Inicializa as threads responsáveis pelo processamento de cada núcleo.
+ */
 void CPU::inicializarThreads() {
 
     if (getTipoExibicao()) {
@@ -74,6 +83,11 @@ void CPU::inicializarThreads() {
     }
 }
 
+/**
+ * @brief Processa tarefas atribuídas a um núcleo específico.
+ *
+ * @param coreID Identificador do núcleo que será processado.
+ */
 void CPU::processarCore(int coreID) {
     if (getTipoExibicao()) {
         cout << "[Core " << coreID << "] iniciando processamento..." << endl;
@@ -132,6 +146,11 @@ void CPU::processarCore(int coreID) {
     }
 }
 
+/**
+ * @brief Realiza o processamento de um processo no núcleo ativo.
+ *
+ * @param processo Referência ao processo a ser processado.
+ */
 void CPU::processamento(Processo &processo) {
     int contQuantum = 0;
 
@@ -170,6 +189,11 @@ void CPU::processamento(Processo &processo) {
     }
 }
 
+/**
+ * @brief Executa uma instrução usando o pipeline da CPU.
+ *
+ * @param instrucao A instrução que será executada.
+ */
 void CPU::executePipeline(const string &instrucao) {
     _pipeline.InstructionFetch(instrucao);
     auto code = _pipeline.InstructionDecode();
@@ -181,6 +205,11 @@ void CPU::executePipeline(const string &instrucao) {
     }
 }
 
+/**
+ * @brief Atualiza os valores nos registradores do núcleo ativo.
+ *
+ * @param registradores Fila contendo pares de índice e valores para os registradores.
+ */
 void CPU::atualizarRegistradores(queue<pair<int, int>> &registradores) {
     while (!registradores.empty()) {
         auto [index, valor] = registradores.front();
@@ -196,19 +225,38 @@ void CPU::incrementaPC() {
     _PC++;
 }
 
+/**
+ * @brief Define a política de escalonamento utilizada pela CPU.
+ *
+ * @param politica A política de escalonamento (FCFS, RR, ou PRIORIDADE).
+ */
 void CPU::setPolitica(TipoPolitica politica) {
     _politica = politica;
 }
 
+/**
+ * @brief Retorna a política de escalonamento atual da CPU.
+ *
+ * @return A política de escalonamento definida.
+ */
 TipoPolitica CPU::getPolitica() {
     return _politica;
 }
 
-
+/**
+ * @brief Define o modo de exibição do sistema (detalhado ou resumido).
+ *
+ * @param tipo True para detalhado, False para resumido.
+ */
 void CPU::setTipoExibicao(bool tipo) {
     _tipoExibicao = tipo;
 }
 
+/**
+ * @brief Obtém o modo de exibição configurado.
+ *
+ * @return True se detalhado, False se resumido.
+ */
 bool CPU::getTipoExibicao() {
     return _tipoExibicao;
 }

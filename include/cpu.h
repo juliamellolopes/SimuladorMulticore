@@ -1,3 +1,11 @@
+/**
+ * @file cpu.h
+ * @brief Declaração da classe CPU, que simula o funcionamento de um processador multicore.
+ *
+ * A classe CPU gerencia núcleos, threads e a execução de processos usando diferentes políticas de escalonamento.
+ * Ela integra componentes como memória, pipeline e unidade de controle (UC).
+ */
+
 #pragma once
 
 #include <thread>
@@ -11,7 +19,7 @@
 #include "memory/cache.h"
 #include "processo.h"
 
-#define TAM_CORE 3
+#define TAM_CORE 2
 #define QUANTUM_CPU 20
 class CPU : UC {
 private:

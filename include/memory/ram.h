@@ -1,3 +1,11 @@
+/**
+ * @file ram.h
+ * @brief Declaração da classe MemoryRAM, que implementa uma memória principal simulada.
+ *
+ * A classe MemoryRAM gerencia a leitura e escrita de valores na memória principal.
+ * Ela também carrega instruções de arquivos para simular um ambiente de execução.
+ */
+
 #pragma once
 
 #include <iostream>

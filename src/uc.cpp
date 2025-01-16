@@ -6,6 +6,7 @@
  * @param var1 Primeiro valor.
  * @param var2 Segundo valor.
  * @param operador Operação a ser executada (+, -, *, /, <, >, =).
+ * @param tipo Indica se o modo detalhado está ativado.
  * @return Resultado da operação.
  */
 int ULA::operation(int var1, int var2, char operador, const bool tipo) {
@@ -41,8 +42,10 @@ int ULA::operation(int var1, int var2, char operador, const bool tipo) {
 
 /**
  * @brief Executa a operação correspondente ao opcode usando a ULA.
- *
+ * @param var1 Primeiro valor.
+ * @param var2 Segundo valor.
  * @param opcode Código da operação.
+ * @param tipo Indica se o modo detalhado está ativado.
  */
 int UC::select(int opcode, int valor1, int valor2, const bool tipo) {
     int res;
@@ -96,5 +99,4 @@ int UC::select(int opcode, int valor1, int valor2, const bool tipo) {
     }
 
     return res;
-    //  escreverRegistrador(_cores[_coreAtivo]._regDest, res);
 }

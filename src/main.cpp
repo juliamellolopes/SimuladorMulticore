@@ -1,27 +1,5 @@
-// #include <iostream>
-
-// using namespace std;
-
-// #include "../include/cpu.h"
-
-// int main() {
-
-//     // menu
-
-//     /*
-//     opção de cada politica de escalonamento e se vc quer ver o sistema detalhadamente(CPU cpu(truw);) ou resumidamento(false)
-//     */
-//     CPU cpu(false);
-
-//     cpu.setPolitica(FCFS);
-//     // cpu.setPolitica(RR);
-//     // cpu.setPolitica(PRIORIDADE);
-//     cpu.inicializar();
-
-//     return 0;
-// }
-
 #include <iostream>
+
 #include "../include/cpu.h"
 
 using namespace std;
@@ -57,15 +35,15 @@ int main() {
     switch (escolha) {
     case 1:
         cpu.setPolitica(FCFS);
-        cout << "Política de escalonamento configurada para FCFS." << endl;
+        cout << "Política de escalonamento configurada para FCFS." << endl << endl;
         break;
     case 2:
         cpu.setPolitica(RR);
-        cout << "Política de escalonamento configurada para Round Robin." << endl;
+        cout << "Política de escalonamento configurada para Round Robin." << endl << endl;
         break;
     case 3:
         cpu.setPolitica(PRIORIDADE);
-        cout << "Política de escalonamento configurada para Prioridade." << endl;
+        cout << "Política de escalonamento configurada para Prioridade." << endl << endl;
         break;
     }
 

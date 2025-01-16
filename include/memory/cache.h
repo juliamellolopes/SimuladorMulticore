@@ -1,3 +1,11 @@
+/**
+ * @file cache.h
+ * @brief Declaração da classe MemoryCache, que implementa uma memória cache simulada.
+ *
+ * A classe MemoryCache gerencia a escrita de valores em um cache de tamanho fixo.
+ * Quando a cache está cheia, os dados mais antigos são movidos para a memória principal (RAM).
+ */
+
 #pragma once
 
 #include <queue>
