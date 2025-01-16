@@ -104,7 +104,7 @@ O arquivo de entrada deve conter instruções no seguinte formato:
 LOAD R1 10
 ADD R3 R1 R2
 STORE R3 15
-IF R1 > R2
+IF R5 R1 > R2
 MULT R4 R1 R2
 ```
 
@@ -120,7 +120,7 @@ Abaixo segue os comandos que o simulador suporta atualmente caso queira alterar 
 | `SUB`         | Subtrai valores                        | `SUB R3 R1 R2`  |
 | `MULT`        | Multiplica valores                     | `MULT R4 R1 R2` |
 | `DIV`         | Divide valores                         | `DIV R5 R1 R2`  |
-| `IF`          | Compara valores                        | `IF R1 > R2`    |
+| `IF`          | Compara valores                        | `IF R3 R1 > R2` |
 
 ## Políticas de Escalonamento
 
