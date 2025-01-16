@@ -107,6 +107,7 @@ STORE R3 15
 IF R1 > R2
 MULT R4 R1 R2
 ```
+
 ### Comandos Suportados
 
 Abaixo segue os comandos que o simulador suporta atualmente caso queira alterar o `instructions.txt`:
@@ -142,9 +143,15 @@ O simulador suporta as seguintes políticas de escalonamento:
 4. **Finalização**:
    - O simulador para quando todas as instruções forem executadas.
 
-## Contato
+## Artigo do Projeto
 
-Este projeto foi desenvolvido por **Julia Mello Lopes Gonçalves**, estudante de Engenharia da Computação.
+Link direcionado para visualização do artigo: https://www.overleaf.com/read/ngyvjkwpmfyq#4508cc
+
+## Autor
+
+Este projeto foi desenvolvido por **Julia Mello Lopes Gonçalves**, estudante de Engenharia da Computação, como parte de um trabalho prático para aprofundar o entendimento sobre a arquitetura de um sistema operacional.
+
+### Contato
 
 - **E-mail**: juliamellolopesgoncalves@gmail.com
 - **GitHub**: [github.com/juliamellolopes](https://github.com/juliamellolopes)
