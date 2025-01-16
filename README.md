@@ -1,18 +1,26 @@
 # Simulador da Arquitetura de Von Neumann e Pipeline MIPS
 
-Este projeto implementa um simulador básico da arquitetura de Von Neumann e do pipeline MIPS em C++. O objetivo é permitir a visualização prática do funcionamento de componentes como a CPU, a memória principal, a memória cache, e o pipeline, além de demonstrar o impacto das instruções executadas em paralelo usando o pipeline MIPS.
+Este projeto implementa um simulador avançado da arquitetura de Von Neumann com suporte ao pipeline MIPS em C++. O objetivo é permitir a visualização prática do funcionamento de componentes como a CPU, a memória principal, a memória cache e o pipeline, além de demonstrar o impacto das políticas de escalonamento de processos e da execução de instruções em paralelo.
 
 ## Funcionalidades
 
-1. **CPU**: Simula o comportamento de uma CPU com múltiplos registradores e uma Unidade Lógica Aritmética (ULA).
-2. **Memória Principal e Cache**: A memória principal é simulada como um vetor, enquanto a cache é implementada como uma fila (FIFO), com substituição simples.
-3. **Pipeline MIPS**: Implementa os cinco estágios do pipeline MIPS:
-   - **IF (Instruction Fetch)**: Busca a instrução da memória.
-   - **ID (Instruction Decode)**: Decodifica a instrução.
-   - **EX (Execute)**: Executa a operação na ULA.
-   - **MEM (Memory Access)**: Acessa a memória principal.
-   - **WB (Write Back)**: Escreve o resultado no registrador.
-4. **Simulação de Políticas de Cache**: A cache utiliza a política de substituição FIFO para gerenciar os dados armazenados.
+1. **CPU Multicore**:
+   - Gerencia múltiplos núcleos (cores) com registradores independentes.
+   - Integra-se ao pipeline MIPS para execução de instruções.
+   - Suporta diferentes políticas de escalonamento: FCFS, Round Robin e Prioridade.
+2. **Memória Hierárquica**:
+   - **Memória Principal (RAM)**: Simula a memória principal com carregamento de instruções a partir de arquivos de texto.
+   - **Memória Cache**: Implementada como uma fila FIFO com descarte automático para a memória principal quando cheia.
+3. **Pipeline MIPS**:
+   - Implementa os cinco estágios do pipeline MIPS:
+     - **IF (Instruction Fetch)**: Busca a instrução da memória.
+     - **ID (Instruction Decode)**: Decodifica a instrução.
+     - **EX (Execute)**: Executa a operação na ULA.
+     - **MEM (Memory Access)**: Acessa a memória principal.
+     - **WB (Write Back)**: Escreve o resultado no registrador.
+4. **Gerenciamento de Processos**:
+   - Cada processo possui um bloco de controle (PCB) contendo informações como prioridade, instruções e estado.
+   - O escalonador gerencia a fila de processos e decide qual será executado com base na política escolhida.
 
 ## Estrutura do Projeto
 
@@ -23,36 +31,35 @@ O projeto está organizado da seguinte forma:
   ├── src/
   │    ├── main.cpp          # Entrada principal do simulador
   │    ├── cpu.cpp           # Implementação da CPU
-  │    ├── memory.cpp        # Implementação da memória principal e cache
+  │    ├── ram.cpp           # Implementação da memória principal
+  │    ├── cache.cpp         # Implementação da memória cache
   │    ├── pipeline.cpp      # Implementação do pipeline MIPS
-  │    └── uc.cpp            # Implementação da Unidade de Controle (UC) e ULA
+  │    ├── escalonador.cpp   # Implementação do escalonador
+  │    └── uc.cpp            # Implementação da Unidade de Controle e ULA
   ├── include/
   │    ├── cpu.h             # Declaração da CPU
-  │    ├── memory.h          # Declaração da memória principal e cache
+  │    ├── ram.h             # Declaração da memória principal
+  │    ├── cache.h           # Declaração da memória cache
   │    ├── pipeline.h        # Declaração do pipeline MIPS
+  │    ├── escalonador.h     # Declaração do escalonador
+  │    ├── pcb.h             # Declaração do bloco de controle de processos (PCB)
+  │    ├── processo.h        # Declaração da classe Processo
   │    ├── uc.h              # Declaração da UC e ULA
   │    └── core.h            # Estrutura básica de registradores
   └── Makefile               # Script Make para compilação
 ```
 
-### Arquivos:
+### Principais Componentes
 
-- `main.cpp`: Ponto de entrada do simulador. Inicializa o pipeline e dá início ao loop de execução das instruções carregadas a partir do arquivo `instructions.txt`.
-- `cpu.cpp`/`cpu.h`: Implementa a lógica da CPU, incluindo:
-  - Gerenciamento de múltiplos núcleos com registradores.
-  - Operações de leitura e escrita nos registradores e na memória.
-  - Incremento e controle do contador de programa (`PC`).
-- `memory.cpp`/`memory.h`: Simula a memória principal e a cache:
-  - **Memória Principal (RAM)**: Carrega instruções de um arquivo de entrada e armazena valores em endereços específicos.
-  - **Memória Cache**: Implementada como uma fila FIFO com descarte automático para a memória principal quando cheia.
-- `pipeline.cpp`/`pipeline.h`: Implementa o pipeline MIPS:
-  - **Instruction Fetch (IF)**: Busca a próxima instrução na memória.
-  - **Instruction Decode (ID)**: Decodifica a instrução e identifica os registradores e operandos envolvidos.
-  - **Execute (EX)**: Executa a operação utilizando a Unidade Lógica Aritmética (ULA) e a Unidade de Controle (UC).
-  - **Memória (MEM)** e **Write Back (WB)** são implicitamente tratados conforme as instruções.
-  - Controla o ciclo de execução das instruções com um loop principal.
-- `uc.cpp`/`uc.h`: Implementa a Unidade de Controle (UC), que gerencia as operações baseadas nos opcodes, delegando as operações aritméticas para a ULA e interagindo com a memória e os registradores.
-- `core.h`: Define a estrutura básica de registradores, com suporte para múltiplos núcleos (`Cores`) organizados em um vetor.
+- `main.cpp`: Ponto de entrada do simulador. Permite ao usuário escolher a política de escalonamento e inicializa a CPU.
+- `cpu.cpp`/`cpu.h`: Implementa a lógica da CPU, incluindo gerenciamento de núcleos, threads e execução de processos.
+- `ram.cpp`/`ram.h` e `cache.cpp`/`cache.h`: Simulam a memória principal e a cache.
+- `pipeline.cpp`/`pipeline.h`: Implementam o pipeline MIPS, coordenando os cinco estágios para cada instrução.
+- `escalonador.cpp`/`escalonador.h`: Gerenciam a ordem de execução dos processos com suporte a três políticas de escalonamento (FCFS, RR e Prioridade).
+- `pcb.h`: Representa o bloco de controle de processos (PCB), contendo informações sobre os processos.
+- `processo.h`: Encapsula o estado e o PCB de cada processo.
+- `uc.cpp`/`uc.h`: Implementam a Unidade de Controle e a Unidade Lógica e Aritmética.
+- `core.h`: Define a estrutura de registradores utilizada pelos núcleos da CPU.
 
 ## Requisitos
 
@@ -63,7 +70,7 @@ O projeto está organizado da seguinte forma:
 
 ### Compilando o Projeto
 
-Para compilar o projeto, basta rodar o comando:
+Para compilar o projeto, execute:
 
 ```bash
 make
@@ -79,7 +86,7 @@ Para rodar o simulador após a compilação, execute:
 make run
 ```
 
-O simulador irá executar uma instrução `ADD` (soma) e simular os cinco estágios do pipeline MIPS, além de realizar uma leitura de memória com cache. O resultado será mostrado no terminal.
+O simulador irá inicializar a CPU, carregar processos e simular a execução com base na política de escalonamento escolhida.
 
 ### Limpando os Arquivos Compilados
 
@@ -91,7 +98,7 @@ make clean
 
 ### Exemplo de Arquivo de Instrução
 
-O arquivo de entrada (`instructions.txt`) deve conter as instruções no seguinte formato:
+O arquivo de entrada deve conter instruções no seguinte formato:
 
 ```plaintext
 LOAD R1 10
@@ -101,132 +108,30 @@ IF R1 > R2
 MULT R4 R1 R2
 ```
 
-Ao rodar o simulador com o exemplo acima, a saída será semelhante a:
+## Políticas de Escalonamento
 
-```
---------- Pipeline Stage: Instruction Fetch ---------
-Buscando instrucao...
-LOAD R1 10
+O simulador suporta as seguintes políticas de escalonamento:
 
---------- Pipeline Stage: Instruction Decode ---------
-Decodificando: LOAD R1 10
-
---------- Pipeline Stage: Execution ---------
-Executando operacao LOAD
-Valor 10 foi escrito no Registrador R1 no Core 0
-
---------- Pipeline Stage: Instruction Fetch ---------
-Buscando instrucao...
-ADD R3 R1 R2
-
---------- Pipeline Stage: Instruction Decode ---------
-Decodificando: ADD R3 R1 R2
-
---------- Pipeline Stage: Execution ---------
-Executando operacao ADD: 10 + 0 = 10
-Valor 10 foi escrito no Registrador R3 no Core 0
-
---------- Pipeline Stage: Instruction Fetch ---------
-Buscando instrucao...
-STORE R3 15
-
---------- Pipeline Stage: Instruction Decode ---------
-Decodificando: STORE R3 15
-
---------- Pipeline Stage: Execution ---------
-Guardando o valor no endereço 15 da memória
-Valor 10 foi armazenado no endereco 15
-
---------- Pipeline Stage: Instruction Fetch ---------
-Buscando instrucao...
-IF R1 > R2
-
---------- Pipeline Stage: Instruction Decode ---------
-Decodificando: IF R1 > R2
-
---------- Pipeline Stage: Execution ---------
-Executando operacao IF: 10 > 0 = Verdade
-
---------- Pipeline Stage: Instruction Fetch ---------
-Buscando instrucao...
-MULT R4 R1 R2
-
---------- Pipeline Stage: Instruction Decode ---------
-Decodificando: MULT R4 R1 R2
-
---------- Pipeline Stage: Execution ---------
-Executando operacao MULT: 10 * 0 = 0
-Valor 0 foi escrito no Registrador R4 no Core 0
-```
-
-### Comandos Suportados
-
-Abaixo segue os comandos que o simulador suporta atualmente caso queira alterar o `instructions.txt`:
-
-| **Instrução** | **Descrição**                          | **Exemplo**     |
-| ------------- | -------------------------------------- | --------------- |
-| `LOAD`        | Carrega valor na memória para registro | `LOAD R1 10`    |
-| `STORE`       | Armazena registro na memória           | `STORE R3 15`   |
-| `ADD`         | Soma valores                           | `ADD R3 R1 R2`  |
-| `SUB`         | Subtrai valores                        | `SUB R3 R1 R2`  |
-| `MULT`        | Multiplica valores                     | `MULT R4 R1 R2` |
-| `DIV`         | Divide valores                         | `DIV R5 R1 R2`  |
-| `IF`          | Compara valores                        | `IF R1 > R2`    |
+1. **FCFS (First-Come, First-Served)**: Executa os processos na ordem de chegada.
+2. **Round Robin (RR)**: Cada processo recebe um quantum fixo para executar e alterna até terminar.
+3. **Prioridade**: Processos de alta prioridade são executados antes dos de prioridade média e baixa.
 
 ## Fluxo de Funcionamento do Simulador
 
-O simulador segue o seguinte fluxo para executar instruções usando a arquitetura de Von Neumann e o pipeline MIPS:
-
 1. **Inicialização**:
-
-   - `main.cpp` cria uma instância do `Pipeline`, que é responsável por coordenar a execução.
-   - A `Unidade de Controle (UC)` é instanciada com a memória principal (`MemoryRAM`) carregada a partir do arquivo `instructions.txt`.
-
-2. **Pipeline MIPS**:
-
-   - **IF (Instruction Fetch)**:
-     - A próxima instrução é buscada da `MemoryRAM` pelo pipeline.
-     - O contador de programa (`PC`) é incrementado.
-   - **ID (Instruction Decode)**:
-     - A instrução é decodificada pela `Unidade de Controle (UC)`, que identifica o opcode e os operandos.
-     - Registradores e operandos são configurados.
-   - **EX (Execute)**:
-     - A `UC` delega operações aritméticas à `Unidade Lógica Aritmética (ULA)`, que executa a operação.
-     - Para instruções condicionais (`IF`), o resultado da comparação é avaliado.
-   - **MEM (Memory Access)**:
-     - Dependendo da instrução (`LOAD` ou `STORE`), a `MemoryCache` ou `MemoryRAM` é acessada para leitura ou escrita.
-   - **WB (Write Back)**:
-     - Os resultados das operações são escritos de volta nos registradores da `CPU`.
-
-3. **Gerenciamento de Memória**:
-
-   - A `MemoryCache` utiliza uma política FIFO para gerenciar dados. Quando cheia, transfere os dados mais antigos para a `MemoryRAM`.
-
+   - O usuário escolhe a política de escalonamento e o modo de exibição (detalhado ou resumido).
+   - A CPU, pipeline e memória são configurados.
+2. **Carregamento de Processos**:
+   - As instruções são carregadas na memória principal a partir de arquivos de texto.
+3. **Execução**:
+   - O escalonador seleciona o próximo processo com base na política configurada.
+   - O pipeline executa as instruções usando os cinco estágios (IF, ID, EX, MEM, WB).
 4. **Finalização**:
-   - O pipeline continua até que todas as instruções sejam executadas.
+   - O simulador para quando todas as instruções forem executadas.
 
-## Fluxograma de Interação dos Arquivos
+## Contato
 
-```plaintext
-main.cpp
-   ↓
-pipeline.cpp
-   ↓
-uc.cpp
- ↙      ↘
-cpu.cpp   memory.cpp
-           ↘
-         core.h
-```
-## Artigo do Projeto
-
-Link direcionado para visualização do artigo: https://www.overleaf.com/read/ngyvjkwpmfyq#4508cc
-
-## Autor
-
-Este projeto foi desenvolvido por **Julia Mello Lopes Gonçalves**, estudante de Engenharia da Computação, como parte de um trabalho prático para aprofundar o entendimento sobre a arquitetura de um sistema operacional.
-
-### Contato
+Este projeto foi desenvolvido por **Julia Mello Lopes Gonçalves**, estudante de Engenharia da Computação.
 
 - **E-mail**: juliamellolopesgoncalves@gmail.com
 - **GitHub**: [github.com/juliamellolopes](https://github.com/juliamellolopes)
