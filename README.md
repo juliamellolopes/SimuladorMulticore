@@ -143,9 +143,9 @@ O simulador suporta as seguintes políticas de escalonamento:
 4. **Finalização**:
    - O simulador para quando todas as instruções forem executadas.
 
-## Artigo do Projeto
+<!-- ## Artigo do Projeto
 
-Link direcionado para visualização do artigo: https://www.overleaf.com/read/jhybhhndkzvk#b268d3
+Link direcionado para visualização do artigo: https://www.overleaf.com/read/jhybhhndkzvk#b268d3 -->
 
 ## Autor
 
