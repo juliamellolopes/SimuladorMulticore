@@ -9,6 +9,8 @@
 #pragma once
 
 #include <queue>
+#include <variant>
+#include <unordered_map>
 
 #include "ram.h"
 
@@ -18,7 +20,7 @@ using namespace std;
 
 class MemoryCache {
 private:
-    queue<pair<int, int>> _cache;
+    unordered_map<int, variant<int, string>> _cache;
     MemoryRAM &_memoryRAM;
     bool _tipoExibicao;
 
@@ -26,7 +28,10 @@ public:
     MemoryCache(MemoryRAM &memoryRAM, bool tipo) :
         _memoryRAM(memoryRAM),
         _tipoExibicao(tipo) {}
-    void escrever(int endereco, int valor);
+
+    void escreverNaCache(int endereco, const variant<int, string> valor);
     void memoriaCheia();
     void liberarCache();
+
+    unordered_map<int, variant<int, string>> obterTodos();
 };

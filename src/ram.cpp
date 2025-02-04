@@ -113,16 +113,34 @@ MemoryCell MemoryRAM::getProcesso(string endereco) {
  * @param endereco O endereço de memória onde o valor será armazenado.
  * @param valor O valor a ser armazenado no endereço especificado.
  */
-void MemoryRAM::escrever(int endereco, int valor) {
+void MemoryRAM::escrever(int endereco, const MemoryCell valor) {
     ostringstream hexStream;
     hexStream << hex << uppercase << endereco;
     string hexValue = hexStream.str();
-    _memoria[hexValue] = valor;
 
-    if (_tipoExibicao) {
-        cout << "      -> Valor " << valor << " foi armazenado no endereco " << endereco << endl;
+    if (!holds_alternative<monostate>(valor)) {
+        if (holds_alternative<string>(valor)) {
+            _memoria["3E" + hexValue] = valor;
+        } else {
+            _memoria[hexValue] = valor;
+        }
+
+        cout << "      -> Armazenado na RAM [" << hexValue << "]: ";
+        visit([](auto &&cellValue) {
+            if constexpr (is_same_v<decay_t<decltype(cellValue)>, int>) {
+                cout << cellValue;
+            } else if constexpr (is_same_v<decay_t<decltype(cellValue)>, string>) {
+                cout << cellValue;
+            } else {
+                cout << "Tipo não tratado";
+            }
+        }, valor);
+        cout << endl;
+    } else {
+        cout << "teste" << endl;
     }
 }
+
 
 /**
  * @brief Armazena um processo em um endereço específico da memória principal.
@@ -134,53 +152,40 @@ void MemoryRAM::guardarProcesso(string endereco, Processo &processo) {
     _memoria[endereco] = processo;
 }
 
-
-/**
- * @brief Exibe todos os endereços de memória atualmente utilizados.
- *
- * Esta função imprime uma lista de endereços de memória onde há dados armazenados.
- */
-void MemoryRAM::mostrarTodosDados() {
-    // for (size_t i = 0; i < _memoria.size(); ++i) {
-    //     cout << "Memory[" << i << "]: ";
-        // visit([](auto &&value) {
-        //     if constexpr (is_same_v<decay_t<decltype(value)>, monostate>) {
-        //         cout << "null";
-        //     } else {
-        //         if constexpr (is_same_v<decay_t<decltype(value)>, int>) {
-        //             cout << value;
-        //         }
-        //     }
-        // }, _memoria[i]);
-        // cout << endl;
-    // }
-
-    for (auto &[k, v] : _memoria) {
-        cout << k << endl;
-    }
-
-}
-
-/**
- * @brief Exibe os dados armazenados na memória principal.
- *
- * Para cada endereço de memória, exibe o conteúdo armazenado, seja um inteiro,
- * um processo ou outro tipo de dado tratado.
- */
 void MemoryRAM::mostrarDados() {
     cout << endl;
     for (const auto &[key, value] : _memoria) {
         visit([&key](auto &&cellValue) {
-            if constexpr (!is_same_v<decay_t<decltype(cellValue)>, monostate>) {
-                if constexpr (is_same_v<decay_t<decltype(cellValue)>, int>) {
-                    cout << "Memory[" << key << "]: " << cellValue << endl;
+            using T = decay_t<decltype(cellValue)>;
+            if constexpr (!is_same_v<T, monostate>) {
+                cout << "Memory[" << key << "]: ";
+                if constexpr (is_same_v<T, int>) {
+                    cout << cellValue;
+                } else  if constexpr (is_same_v<T, string>) {
+                    cout << cellValue;
                 } else if constexpr (is_same_v<decay_t<decltype(cellValue)>, Processo>) {
                     Processo processo = cellValue;
-                    cout << "Memory[" << key << "]: Processo ID: " << processo._pcb.getId() << endl;
+                    cout << "Processo ID: " << processo._pcb.getId();
                 } else {
-                    cout << "Memory[" << key << "]: Não é do tipo tratado" << endl;
+                    cout << "Valor não tratado";
                 }
+                cout << endl;
             }
         }, value);
     }
+}
+
+unordered_map<string, variant<int, string>> MemoryRAM::obterTodos() {
+    unordered_map<string, variant<int, string>> resultado;
+
+    for (const auto &[endereco, valor] : _memoria) {
+        visit([&](auto &&cellValue) {
+            using T = decay_t<decltype(cellValue)>;
+            if constexpr (is_same_v<T, int> || is_same_v<T, string>) {
+                resultado[endereco] = cellValue;
+            }
+        }, valor);
+    }
+
+    return resultado;
 }

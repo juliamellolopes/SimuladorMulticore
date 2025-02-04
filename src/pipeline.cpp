@@ -67,7 +67,7 @@ void Pipeline::escreverRegistrador(int reg, int valor) {
  */
 void Pipeline::escreverNaMemoria(int endereco) {
     int valor = lerRegistrador(_cores[_coreAtivo]._reg1);
-    _memoryCache.escrever(endereco, valor);
+    _memoryCache.escreverNaCache(endereco, valor);
 }
 
 

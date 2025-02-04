@@ -197,11 +197,29 @@ void CPU::processamento(Processo &processo) {
 void CPU::executePipeline(const string &instrucao) {
     _pipeline.InstructionFetch(instrucao);
     auto code = _pipeline.InstructionDecode();
+    int aux = 0;
 
-    if (code.size() != 0) {
+    if (!code.empty()) {
         auto valores = _pipeline.Execute(code);
+
+        string instrucaoFormatada = code + " " + to_string(valores[1]) + " " + to_string(valores[2]);
+        int resultado;
+
+        if (_escalonador.verificarReaproveitamento(instrucaoFormatada, resultado)) {
+            if (_tipoExibicao) {
+                cout << "      -> Instrução já processada anteriormente. Resultado: " << resultado << endl;
+            }
+            _pipeline.escreverRegistrador(_cores[_coreAtivo]._regDest, resultado);
+            return;
+        }
+
         auto res = select(valores[0], valores[1], valores[2], getTipoExibicao());
         _pipeline.escreverRegistrador(_cores[_coreAtivo]._regDest, res);
+
+        if (code != "STORE" && code != "LOAD") {
+            string instrucaoFormatada = code + " " + to_string(valores[1]) + " " + to_string(valores[2]) + " " + to_string(res);
+            _memoryCache.escreverNaCache(aux, instrucaoFormatada);
+        }
     }
 }
 

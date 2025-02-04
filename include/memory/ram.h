@@ -15,6 +15,7 @@
 #include <variant> 
 #include <map>
 #include <iomanip>
+#include <unordered_map>
 
 #include "processo.h"
 
@@ -23,7 +24,7 @@
 
 using namespace std;
 
-using MemoryCell = variant<monostate, int, Processo>;
+using MemoryCell = variant<monostate, int, string, Processo>;
 
 class MemoryRAM {
 private:
@@ -42,9 +43,10 @@ public:
     vector<vector<string>>_instrucoes;
 
     void incrementaInstrucao();
-    void escrever(int endereco, int valor);
+    void escrever(int endereco, const MemoryCell valor);
     void mostrarDados();
-    void mostrarTodosDados();
     void guardarProcesso(string endereco, Processo &processo);
     MemoryCell getProcesso(string endereco);
+    unordered_map<string, variant<int, string>> obterTodos();
+
 };

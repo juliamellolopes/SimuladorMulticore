@@ -1,5 +1,47 @@
 #include "../include/scheduler/escalonador.h"
 
+bool Escalonador::verificarReaproveitamento(const string &operacao, int &resultado) {
+    for (const auto &[_, valor] : _memoryCache.obterTodos()) {
+        if (holds_alternative<string>(valor)) {
+            string instrucao = get<string>(valor);
+            if (instrucao.find(operacao) != string::npos) {
+                vector<string> tokens;
+                stringstream ss(instrucao);
+                string token;
+                while (ss >> token) tokens.push_back(token);
+
+                if (!tokens.empty()) {
+                    resultado = stoi(tokens.back()); 
+                }
+
+                cout << "      -> Instrução já está na memória Cache: " << instrucao << endl;
+                return true;
+            }
+        }
+    }
+
+    for (const auto &[_, valor] : _memoryRAM.obterTodos()) {
+        if (holds_alternative<string>(valor)) {
+            string instrucao = get<string>(valor);
+            if (instrucao.find(operacao) != string::npos) {
+                vector<string> tokens;
+                stringstream ss(instrucao);
+                string token;
+                while (ss >> token) tokens.push_back(token);
+
+                if (!tokens.empty()) {
+                    resultado = stoi(tokens.back());  // Pega o último valor como resultado
+                }
+
+                cout << "      -> Instrução já está na memória RAM: " << instrucao << endl;
+                return true;
+            }
+        }
+    }
+
+    return false; 
+}
+
 /**
  * @brief Seleciona o próximo processo a ser executado com base na política de escalonamento.
  *

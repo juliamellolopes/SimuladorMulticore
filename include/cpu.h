@@ -48,7 +48,7 @@ public:
         _memoryRAM("instructions/", _tipoExibicao),
         _memoryCache(_memoryRAM, _tipoExibicao),
         _pipeline(_memoryRAM, _memoryCache, _cores, _coreAtivo, _PC, _tipoExibicao),
-        _escalonador(_processosID) {
+        _escalonador(_processosID, _memoryRAM, _memoryCache) {
         init();
     }
     ~CPU() {}
