@@ -53,12 +53,26 @@ void MemoryCache::memoriaCheia() {
     _cache.erase(it);
 }
 
+/**
+ * @brief Esvazia completamente a Cache.
+ *
+ * Executa `memoriaCheia()` até que todos os blocos da Cache tenham sido movidos para a RAM.
+ * Isso garante que a Cache fique vazia, podendo ser utilizada para novas instruções.
+ */
 void MemoryCache::liberarCache() {
     while (_cache.size() != 0) {
         memoriaCheia();
     }
 }
 
+/**
+ * @brief Retorna todos os valores armazenados na Cache.
+ *
+ * Esse método é utilizado para obter todas as entradas armazenadas atualmente na Cache,
+ * permitindo buscas rápidas e reuso de instruções.
+ *
+ * @return Um unordered_map contendo os valores armazenados na Cache.
+ */
 unordered_map<int, variant<int, string>> MemoryCache::obterTodos() {
     return _cache;
 }

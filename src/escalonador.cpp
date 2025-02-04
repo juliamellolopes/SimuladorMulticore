@@ -1,5 +1,15 @@
 #include "../include/scheduler/escalonador.h"
 
+/**
+ * @brief Verifica se uma instrução já foi processada anteriormente e obtém seu resultado.
+ *
+ * Esta função busca na Cache e na RAM se a instrução fornecida já foi executada.
+ * Caso seja encontrada, retorna o resultado armazenado e evita a necessidade de reprocessamento.
+ *
+ * @param operacao A string representando a operação, no formato "OPCODE OPERANDO1 OPERANDO2".
+ * @param resultado Variável de saída onde será armazenado o resultado da operação, se encontrado.
+ * @return true se a instrução já foi processada e o resultado foi recuperado, false caso contrário.
+ */
 bool Escalonador::verificarReaproveitamento(const string &operacao, int &resultado) {
     for (const auto &[_, valor] : _memoryCache.obterTodos()) {
         if (holds_alternative<string>(valor)) {
@@ -30,7 +40,7 @@ bool Escalonador::verificarReaproveitamento(const string &operacao, int &resulta
                 while (ss >> token) tokens.push_back(token);
 
                 if (!tokens.empty()) {
-                    resultado = stoi(tokens.back());  // Pega o último valor como resultado
+                    resultado = stoi(tokens.back()); 
                 }
 
                 cout << "      -> Instrução já está na memória RAM: " << instrucao << endl;

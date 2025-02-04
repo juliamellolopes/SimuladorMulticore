@@ -190,9 +190,13 @@ void CPU::processamento(Processo &processo) {
 }
 
 /**
- * @brief Executa uma instrução usando o pipeline da CPU.
+ * @brief Executa o pipeline para processar uma instrução.
  *
- * @param instrucao A instrução que será executada.
+ * A função realiza as etapas do pipeline: busca da instrução, decodificação, execução
+ * e armazenamento do resultado. Antes de executar, verifica se a instrução já foi processada
+ * e está armazenada na Cache ou na RAM. Caso positivo, reutiliza o resultado e evita o processamento.
+ *
+ * @param instrucao A instrução a ser executada.
  */
 void CPU::executePipeline(const string &instrucao) {
     _pipeline.InstructionFetch(instrucao);

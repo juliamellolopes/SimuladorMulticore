@@ -152,6 +152,13 @@ void MemoryRAM::guardarProcesso(string endereco, Processo &processo) {
     _memoria[endereco] = processo;
 }
 
+/**
+ * @brief Exibe o conteúdo armazenado na memória RAM.
+ *
+ * Percorre todos os endereços da memória RAM e exibe os valores armazenados.
+ * O tipo do valor é identificado dinamicamente e impresso conforme apropriado.
+ * Se for um processo, exibe o ID do processo associado.
+ */
 void MemoryRAM::mostrarDados() {
     cout << endl;
     for (const auto &[key, value] : _memoria) {
@@ -175,6 +182,14 @@ void MemoryRAM::mostrarDados() {
     }
 }
 
+/**
+ * @brief Retorna todos os valores armazenados na RAM.
+ *
+ * Cria e retorna um mapa contendo todas as células de memória que armazenam inteiros ou strings.
+ * Esse método é utilizado para realizar buscas rápidas em toda a memória RAM.
+ *
+ * @return Um unordered_map contendo os valores armazenados na RAM.
+ */
 unordered_map<string, variant<int, string>> MemoryRAM::obterTodos() {
     unordered_map<string, variant<int, string>> resultado;
 
