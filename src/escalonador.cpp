@@ -21,7 +21,7 @@ bool Escalonador::verificarReaproveitamento(const string &operacao, int &resulta
                 while (ss >> token) tokens.push_back(token);
 
                 if (!tokens.empty()) {
-                    resultado = stoi(tokens.back()); 
+                    resultado = stoi(tokens.back());
                 }
 
                 cout << "      -> Instrução já está na memória Cache: " << instrucao << endl;
@@ -40,7 +40,7 @@ bool Escalonador::verificarReaproveitamento(const string &operacao, int &resulta
                 while (ss >> token) tokens.push_back(token);
 
                 if (!tokens.empty()) {
-                    resultado = stoi(tokens.back()); 
+                    resultado = stoi(tokens.back());
                 }
 
                 cout << "      -> Instrução já está na memória RAM: " << instrucao << endl;
@@ -49,7 +49,7 @@ bool Escalonador::verificarReaproveitamento(const string &operacao, int &resulta
         }
     }
 
-    return false; 
+    return false;
 }
 
 /**
@@ -70,6 +70,12 @@ void Escalonador::selecao(TipoPolitica politica, Processo &processo, int &proces
     case PRIORIDADE:
         _prioridade.gerenciarPrioridade(processo, processosAtivos);
         break;
+    case ESJF:
+    {
+        vector<Processo> listaProcessos = { processo };
+        _sjf.organizarFila(listaProcessos);
+    }
+    break;
     default:
         break;
     }

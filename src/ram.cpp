@@ -204,3 +204,15 @@ unordered_map<string, variant<int, string>> MemoryRAM::obterTodos() {
 
     return resultado;
 }
+
+Processo MemoryRAM::getProcessoPorIdBinario(string idBinario) {
+    for (auto &[key, value] : _memoria) {
+        if (holds_alternative<Processo>(value)) {
+            Processo processo = get<Processo>(value);
+            if (processo._pcb.getIdBinario() == idBinario) {
+                return processo;
+            }
+        }
+    }
+    throw runtime_error("Processo não encontrado com ID binário: " + idBinario);
+}

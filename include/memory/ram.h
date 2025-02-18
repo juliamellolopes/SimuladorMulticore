@@ -49,4 +49,5 @@ public:
     MemoryCell getProcesso(string endereco);
     unordered_map<string, variant<int, string>> obterTodos();
 
+    Processo getProcessoPorIdBinario(string idBinario);
 };

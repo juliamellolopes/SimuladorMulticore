@@ -10,10 +10,12 @@
 
 #include <iostream>
 #include <variant> 
+#include <algorithm>
 
 #include "fcfs.h"
 #include "rr.h"
 #include "prioridade.h"
+#include "sjf.h"
 #include "processo.h"
 #include "memory/cache.h"
 
@@ -22,22 +24,25 @@ using namespace std;
 enum TipoPolitica {
     FCFS,
     RR,
-    PRIORIDADE
+    PRIORIDADE,
+    ESJF
 };
 
 class Escalonador {
 private:
     FComeFServed _fcfs;
     RoundRobin _rr;
+    SJF _sjf;
     MemoryRAM &_memoryRAM;
-    MemoryCache &_memoryCache; 
-
+    MemoryCache &_memoryCache;
+    vector<Processo> _filaProcessos;
 
 public:
     Prioridade _prioridade;
 
     Escalonador(queue<string> &processosID, MemoryRAM &memoryRAM, MemoryCache &memoryCache) :
         _rr(processosID),
+        _sjf(processosID),
         _memoryRAM(memoryRAM),
         _memoryCache(memoryCache),
         _prioridade(processosID) {}

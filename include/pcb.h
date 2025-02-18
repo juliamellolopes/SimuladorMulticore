@@ -12,6 +12,7 @@
 #include <string>
 #include <queue>
 #include <random>
+#include <bitset>
 
 using namespace std;
 
@@ -33,6 +34,7 @@ private:
     TipoPrioridade _prioridade;
     queue<pair<int, int>> _dadosRegistradores;
     string _enderecoBase;
+
 public:
     PCB() :
         _quantum(QUANTUM_P),
@@ -46,6 +48,7 @@ public:
     int getQuantum();
     int getSizeIntrucoes();
     int getTempoAtual();
+    int getTempoAtual() const;
     int getTempoTotal();
     bool checkEstadoFinalizado();
     TipoPrioridade getPrioridade();
@@ -57,4 +60,6 @@ public:
     void setInstrucoes(vector<string> caminho);
     void inserirRegistrador(int index, int value);
     TipoPrioridade gerarPrioridadeAleatoria();
+
+    string getIdBinario() const;
 };

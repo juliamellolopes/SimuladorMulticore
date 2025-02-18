@@ -14,7 +14,7 @@
 
 #include "ram.h"
 
-#define TAM_CACHE 5
+#define TAM_CACHE 1
 
 using namespace std;
 

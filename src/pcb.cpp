@@ -147,6 +147,10 @@ int PCB::getTempoAtual() {
     return (_estadoAtual + 1) * QUANTUM_P - getTempoTotal();
 }
 
+int PCB::getTempoAtual() const {
+    return (_estadoAtual + 1) * QUANTUM_P - _instrucoes.size() * QUANTUM_P;
+}
+
 /**
  * @brief Calcula o tempo total necessário para concluir o processo.
  *
@@ -154,4 +158,8 @@ int PCB::getTempoAtual() {
  */
 int PCB::getTempoTotal() {
     return getSizeIntrucoes() * QUANTUM_P;
+}
+
+string PCB::getIdBinario() const {
+    return bitset<16>(_id).to_string();
 }
